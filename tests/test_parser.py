@@ -29,10 +29,7 @@ def test_bold_text():
     )
 
 
-@pytest.mark.parametrize("text", [
-    ("This is *formatted*"),
-    ("This is _formatted_")
-])
+@pytest.mark.parametrize("text", [("This is *formatted*"), ("This is _formatted_")])
 def test_italic_text(text):
     tokens = tokenize(text)
     parser = Parser(tokens)
@@ -48,9 +45,25 @@ def test_underline_text():
     parser = Parser(tokens)
     parser.parse()
     assert_tree(
-        parser.tree, [
+        parser.tree,
+        [
             ast.Text("An "),
             ast.UnderlineText(ast.Text("underlined")),
             ast.Text(" example"),
-        ]
+        ],
+    )
+
+
+def test_underline_italics_text():
+    text = "An __*underline italics*__ example"
+    tokens = tokenize(text)
+    parser = Parser(tokens)
+    parser.parse()
+    assert_tree(
+        parser.tree,
+        [
+            ast.Text("An "),
+            ast.UnderlineText(ast.ItalicText(ast.Text("underline italics"),)),
+            ast.Text(" example"),
+        ],
     )
