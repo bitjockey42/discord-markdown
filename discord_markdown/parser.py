@@ -19,12 +19,14 @@ class Parser:
         node = None
         current_token = next(self.token_iter)
         is_quote = False
+        quote_token = None
 
         while current_token != self.eof:
             text_node = ""
 
             if current_token.type in QUOTE_TOKEN_TYPES:
                 is_quote = True
+                quote_token = current_token
 
             if current_token.type not in NONFORMAT_TOKEN_TYPES:
                 self._stack.append(current_token)
@@ -48,13 +50,15 @@ class Parser:
                             )
                         else:
                             node = AST_BY_TOKEN_TYPE[current_token.type](node)
-                elif is_quote and current_token.type in [
-                    TokenSpecification.NEWLINE.name,
-                    self.eof.type,
-                ]:
-                    quote_token = self._stack.pop()
+                elif (
+                    is_quote
+                    and quote_token.type == TokenSpecification.INLINE_QUOTE.name
+                    and current_token.type == TokenSpecification.NEWLINE.name
+                ):
                     node = AST_BY_TOKEN_TYPE[quote_token.type](node)
+                    self._stack.pop()
                     is_quote = False
+                    quote_token = None
                 else:
                     text_node = text_node + current_token.value
                     node = AST_BY_TOKEN_TYPE[TokenSpecification.TEXT.name](text_node)
