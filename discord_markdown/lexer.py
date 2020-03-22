@@ -18,7 +18,7 @@ TOKEN_SPECIFICATION = [
 Token = collections.namedtuple("Token", ["type", "value", "line", "column"])
 
 
-def tokenize(code, skip_newline=True):
+def tokenize(code, skip_newline=False):
     line_count = code.count("\n") + 1
     terminal_token = Token("TERM", value="", line=line_count, column=len(code))
 
@@ -58,7 +58,7 @@ def tokenize(code, skip_newline=True):
     return tokens
 
 
-def tokenize_generator(code, skip_newline=True):
+def tokenize_generator(code, skip_newline=False):
     tok_regex = "|".join(
         "(?P<%s>%s)%s" % token_regex for token_regex in TOKEN_SPECIFICATION
     )

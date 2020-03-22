@@ -19,3 +19,12 @@ def test_italic():
         Token("TEXT", value="Italic", line=1, column=1),
         Token("ITALIC", value="_", line=1, column=7),
     ]
+
+
+def test_underline():
+    text = "__Underline__"
+    assert tokenize(text) == [
+        Token("UNDERLINE", value="__", line=1, column=0),
+        Token("TEXT", value="Underline", line=1, column=2),
+        Token("UNDERLINE", value="__", line=1, column=11),
+    ]
