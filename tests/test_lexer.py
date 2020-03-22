@@ -28,3 +28,12 @@ def test_underline():
         Token("TEXT", value="Underline", line=1, column=2),
         Token("UNDERLINE", value="__", line=1, column=11),
     ]
+
+
+def test_strikethrough():
+    text = "~~Strikethrough~~"
+    assert tokenize(text) == [
+        Token("STRIKETHROUGH", value="~~", line=1, column=0),
+        Token("TEXT", value="Strikethrough", line=1, column=2),
+        Token("STRIKETHROUGH", value="~~", line=1, column=15),
+    ]
