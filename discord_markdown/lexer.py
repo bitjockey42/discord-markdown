@@ -19,7 +19,7 @@ Token = collections.namedtuple("Token", ["type", "value", "line", "column"])
 
 
 def tokenize(code, skip_newline=True):
-    line_count = code.count("\n")
+    line_count = code.count("\n") + 1
     terminal_token = Token("TERM", value="", line=line_count, column=len(code))
 
     token_iter = tokenize_generator(code, skip_newline)
@@ -28,6 +28,9 @@ def tokenize(code, skip_newline=True):
     text_tokens = []
 
     while current_token != terminal_token:
+        if (current_token.line == terminal_token.line and current_token.column == terminal_token.column and current_token.value == ""):
+            break            
+
         while current_token.type == "TEXT" or current_token.type == "SPACE":
             text_tokens.append(current_token)
             current_token = next(token_iter, terminal_token)
@@ -42,8 +45,9 @@ def tokenize(code, skip_newline=True):
             )
             text_tokens = []
             tokens.append(concat_text_token)
-        
-        tokens.append(current_token)
+
+        if current_token != terminal_token:
+            tokens.append(current_token)
 
         current_token = next(token_iter, terminal_token)
 
