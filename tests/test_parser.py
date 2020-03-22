@@ -6,8 +6,8 @@ from discord_markdown import ast
 
 
 def assert_tree(parser_tree, expected):
-    assert [(node.value, node.HTML_TAG) for node in parser_tree] == [
-        (e.value, e.HTML_TAG) for e in expected
+    assert [(node.eval(), node.HTML_TAG) for node in parser_tree] == [
+        (e.eval(), e.HTML_TAG) for e in expected
     ]
 
 
@@ -26,5 +26,5 @@ def test_formatted_text():
     parser.parse()
     assert_tree(parser.tree, [
         ast.Text("This is "),
-        ast.BoldText("formatted"),
+        ast.BoldText(ast.Text("formatted")),
     ])
