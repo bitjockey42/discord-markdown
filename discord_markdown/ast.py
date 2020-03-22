@@ -1,4 +1,5 @@
 class Text:
+    HTML_TAG = None
     def __init__(self, value):
         self.value = value
 

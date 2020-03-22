@@ -4,7 +4,7 @@ from discord_markdown import ast
 
 
 def assert_tree(parser_tree, expected):
-    assert [node.value for node in parser_tree] == [e.value for e in expected]
+    assert [(node.value, node.HTML_TAG) for node in parser_tree] == [(e.value, e.HTML_TAG) for e in expected]
 
 
 def test_simple():
@@ -13,3 +13,11 @@ def test_simple():
     parser = Parser(tokens)
     parser.parse()
     assert_tree(parser.tree, [ast.Text(text)])
+
+
+def test_formatted_text():
+    text = "**Formatted Text**"
+    tokens = tokenize(text)
+    parser = Parser(tokens)
+    parser.parse()
+    assert_tree(parser.tree, [ast.BoldText(text)])
