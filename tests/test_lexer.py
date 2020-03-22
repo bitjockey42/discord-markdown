@@ -46,3 +46,12 @@ def test_strikethrough():
         Token("TEXT", value="Strikethrough", line=1, column=2),
         Token("STRIKETHROUGH", value="~~", line=1, column=15),
     ]
+
+
+def test_bold_italic():
+    text = "***Bold Italics***"
+    assert tokenize(text) == [
+        Token("BOLD_ITALIC", value="***", line=1, column=0),
+        Token("TEXT", value="Bold Italics", line=1, column=3),
+        Token("BOLD_ITALIC", value="***", line=1, column=15),
+    ]

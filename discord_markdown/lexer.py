@@ -5,6 +5,7 @@ TOKEN_SPECIFICATION = [
     ("CODE_BLOCK", r"`", "{3}"),
     ("INLINE_CODE", r"`", "{1}"),
     ("SPOILER", r"\|", "{2}"),
+    ("BOLD_ITALIC", r"\*", "{3}"),
     ("BOLD", r"\*", "{2}"),
     ("UNDERLINE", r"_", "{2}"),
     ("ITALIC", r"\*|_", "{1}"),
