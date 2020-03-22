@@ -139,3 +139,13 @@ def test_inline_quote():
         Token(type="NEWLINE", value="\n", line=2, column=20),
         Token(type="TEXT", value="This should not be", line=2, column=0),
     ]
+
+
+def test_multiline_quote():
+    text = ">>> This should all\n be part of it"
+    assert tokenize(text) == [
+        Token(type="BLOCK_QUOTE", value=">>>", line=1, column=0),
+        Token(type="TEXT", value=" This should all", line=1, column=3),
+        Token(type="NEWLINE", value="\n", line=2, column=19),
+        Token(type="TEXT", value=" be part of it", line=2, column=0),
+    ]
