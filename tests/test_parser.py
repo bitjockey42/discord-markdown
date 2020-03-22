@@ -69,6 +69,21 @@ def test_underline_italics_text():
     )
 
 
+def test_underline_bold_text():
+    text = "An __**underline bold**__ example"
+    tokens = tokenize(text)
+    parser = Parser(tokens)
+    parser.parse()
+    assert_tree(
+        parser.tree,
+        [
+            ast.Text("An "),
+            ast.UnderlineText(ast.BoldText(ast.Text("underline bold"),)),
+            ast.Text(" example"),
+        ],
+    )
+
+
 def test_multiple_formatted_text():
     text = "An __*underline italics*__ example. I **am** depressed."
     tokens = tokenize(text)
