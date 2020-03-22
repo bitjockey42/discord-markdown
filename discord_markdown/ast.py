@@ -46,3 +46,11 @@ class CodeBlock(FormattedText):
 
     def eval(self):
         return f"<pre>{self.open}{self.value.eval()}{self.close}</pre>"
+
+
+class InlineQuote(FormattedText):
+    HTML_TAG = "q"
+
+
+class BlockQuote(FormattedText):
+    HTML_TAG = "blockquote"
