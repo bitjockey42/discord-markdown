@@ -12,15 +12,15 @@ class Text:
 
 
 class FormattedText(Text):
-    HTML_TAG = ""
+    HTML_TAG = None
 
     @property
     def open(self):
-        return f"<{self.HTML_TAG}>"
+        return f"<{self.HTML_TAG}>" if self.HTML_TAG else ""
 
     @property
     def close(self):
-        return f"</{self.HTML_TAG}>"
+        return f"</{self.HTML_TAG}>" if self.HTML_TAG else ""
 
     def eval(self):
         return f"{self.open}{self.value.eval()}{self.close}"

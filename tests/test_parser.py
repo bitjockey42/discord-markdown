@@ -29,6 +29,14 @@ def test_bold_text():
     )
 
 
+def test_bold_alt_text():
+    text = "**formatted**"
+    tokens = tokenize(text)
+    parser = Parser(tokens)
+    parser.parse()
+    assert_tree(parser.tree, [ast.BoldText(ast.Text("formatted")),])
+
+
 def test_bold_italics_text():
     text = "This is ***formatted***"
     tokens = tokenize(text)
@@ -138,5 +146,37 @@ def test_inline_code():
             ast.Text("Run this command "),
             ast.InlineCode(ast.Text("echo hello")),
             ast.Text("."),
+        ],
+    )
+
+
+def test_code_block():
+    text = """```sh
+    echo test
+    ```"""
+    tokens = tokenize(text)
+    parser = Parser(tokens)
+    parser.parse()
+    assert_tree(
+        parser.tree, [
+            ast.CodeBlock(
+                ast.Text("\n    echo test\n    "),
+            ),
+            ast.Text(""),
+        ],
+    )
+
+
+@pytest.mark.skip("FIXME")
+def test_inline_quote():
+    text = "> This is a quote.\nThis isn't part of it."
+    tokens = tokenize(text)
+    parser = Parser(tokens)
+    parser.parse()
+    assert_tree(
+        parser.tree,
+        [
+            ast.InlineQuote(ast.Text(" This is a quote")),
+            ast.Text("This isn't part of it."),
         ],
     )

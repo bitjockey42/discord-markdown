@@ -15,13 +15,12 @@ class Parser:
         return self._tree
 
     def parse(self):
-        print(self.tokens)
-
-        text_node = None
+        print("TOKENS", self.tokens)
         node = None
         current_token = next(self.token_iter)
 
         while current_token != self.eof:
+            text_node = ""
             if current_token.type not in NONFORMAT_TOKEN_TYPES:
                 self._stack.append(current_token)
             else:
@@ -32,7 +31,8 @@ class Parser:
             current_token = next(self.token_iter)
 
             while self._stack:
-                print(self._stack)
+                print("STACK", self._stack)
+
                 if current_token.type not in NONFORMAT_TOKEN_TYPES:
                     if self._stack[-1].type != current_token.type:
                         self._stack.append(current_token)
@@ -45,9 +45,9 @@ class Parser:
                         else:
                             node = AST_BY_TOKEN_TYPE[current_token.type](node)
                 else:
-                    node = AST_BY_TOKEN_TYPE[TokenSpecification.TEXT.name](
-                        current_token.value
-                    )
+                    text_node = text_node + current_token.value
+                    node = AST_BY_TOKEN_TYPE[TokenSpecification.TEXT.name](text_node)
+
                 current_token = next(self.token_iter)
 
             self._tree.append(node)
