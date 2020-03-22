@@ -28,8 +28,12 @@ def tokenize(code, skip_newline=True):
     text_tokens = []
 
     while current_token != terminal_token:
-        if (current_token.line == terminal_token.line and current_token.column == terminal_token.column and current_token.value == ""):
-            break            
+        if (
+            current_token.line == terminal_token.line
+            and current_token.column == terminal_token.column
+            and current_token.value == ""
+        ):
+            break
 
         while current_token.type == "TEXT" or current_token.type == "SPACE":
             text_tokens.append(current_token)
@@ -41,7 +45,7 @@ def tokenize(code, skip_newline=True):
                 "TEXT",
                 value="".join(concat_text),
                 line=text_tokens[0].line,
-                column=text_tokens[0].column
+                column=text_tokens[0].column,
             )
             text_tokens = []
             tokens.append(concat_text_token)
