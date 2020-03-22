@@ -49,7 +49,6 @@ def tokenize_generator(code, skip_newline=False):
     tok_regex = "|".join(
         "(?P<%s>%s)%s" % token_spec.value for token_spec in list(TokenSpecification)
     )
-    print(tok_regex)
     line_num = 1
     line_start = 0
     for mo in re.finditer(tok_regex, code):

@@ -1,3 +1,5 @@
+import pytest
+
 from discord_markdown.lexer import tokenize
 from discord_markdown.parser import Parser
 from discord_markdown import ast
@@ -16,7 +18,7 @@ def test_simple():
 
 
 def test_formatted_text():
-    text = "**Formatted Text**"
+    text = "This is **formatted**"
     tokens = tokenize(text)
     parser = Parser(tokens)
     parser.parse()
