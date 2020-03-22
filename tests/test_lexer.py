@@ -70,6 +70,13 @@ def test_underline_italic():
 
 def test_underline_bold():
     text = "__**underline bold**__"
+    assert tokenize(text) == [
+        Token("UNDERLINE", value="__", line=1, column=0),
+        Token("BOLD", value="**", line=1, column=2),
+        Token("TEXT", value="underline bold", line=1, column=4),
+        Token("BOLD", value="**", line=1, column=18),
+        Token("UNDERLINE", value="__", line=1, column=20),
+    ]
 
 
 def test_underline_bold_italics():
