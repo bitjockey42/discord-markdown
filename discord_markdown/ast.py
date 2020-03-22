@@ -35,3 +35,7 @@ class UnderlineText(FormattedText):
 
 class StrikethroughText(FormattedText):
     HTML_TAG = "s"
+
+
+class CodeBlock(FormattedText):
+    HTML_TAG = "code"
