@@ -12,6 +12,16 @@ def test_bold():
     ]
 
 
+def test_bold_inline():
+    text = "Is this **Bold**"
+    assert tokenize(text) == [
+        Token("TEXT", value="Is this ", line=1, column=0),
+        Token("BOLD", value="**", line=1, column=8),
+        Token("TEXT", value="Bold", line=1, column=10),
+        Token("BOLD", value="**", line=1, column=14),
+    ]
+
+
 def test_italic():
     text = "_Italic_"
     assert tokenize(text) == [
