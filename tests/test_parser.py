@@ -67,3 +67,20 @@ def test_underline_italics_text():
             ast.Text(" example"),
         ],
     )
+
+
+def test_multiple_formatted_text():
+    text = "An __*underline italics*__ example. I **am** depressed."
+    tokens = tokenize(text)
+    parser = Parser(tokens)
+    parser.parse()
+    assert_tree(
+        parser.tree,
+        [
+            ast.Text("An "),
+            ast.UnderlineText(ast.ItalicText(ast.Text("underline italics"),)),
+            ast.Text(" example. I "),
+            ast.BoldText(ast.Text("am")),
+            ast.Text(" depressed."),
+        ],
+    )
