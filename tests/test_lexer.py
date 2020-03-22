@@ -55,3 +55,22 @@ def test_bold_italic():
         Token("TEXT", value="Bold Italics", line=1, column=3),
         Token("BOLD_ITALIC", value="***", line=1, column=15),
     ]
+
+
+def test_underline_italic():
+    text = "__*underline italics*__" 
+    assert tokenize(text) == [
+        Token("UNDERLINE", value="__", line=1, column=0),
+        Token("ITALIC", value="*", line=1, column=2),
+        Token("TEXT", value="underline italics", line=1, column=3),
+        Token("ITALIC", value="*", line=1, column=20),
+        Token("UNDERLINE", value="__", line=1, column=21),
+    ]
+
+
+def test_underline_bold():
+    text = "__**underline bold**__"
+
+
+def test_underline_bold_italics():
+    text = "__***underline bold italics***__"
