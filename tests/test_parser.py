@@ -110,3 +110,18 @@ def test_multiple_formatted_text():
             ast.Text(" depressed."),
         ],
     )
+
+
+def test_strikethrough_text():
+    text = "A ~~strikethrough~~ example"
+    tokens = tokenize(text)
+    parser = Parser(tokens)
+    parser.parse()
+    assert_tree(
+        parser.tree,
+        [
+            ast.Text("A "),
+            ast.StrikethroughText(ast.Text("strikethrough")),
+            ast.Text(" example"),
+        ],
+    )
