@@ -23,6 +23,7 @@ class TokenSpecification(enum.Enum):
 
 
 NONFORMAT_TOKEN_TYPES = [
-    TokenSpecification.SPACE,
-    TokenSpecification.NEWLINE,
+    TokenSpecification.TEXT.name,
+    TokenSpecification.SPACE.name,
+    TokenSpecification.NEWLINE.name,
 ]

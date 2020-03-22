@@ -1,4 +1,5 @@
 from .ast import AST_BY_TOKEN_TYPE
+from .spec import TokenSpecification, NONFORMAT_TOKEN_TYPES
 
 
 class Parser:
@@ -14,10 +15,23 @@ class Parser:
         return self._tree
 
     def parse(self):
-        # If the token is a format token, add it to the stack
-        # If the stack is not empty, pop
-        # If the current token is a format token, pop from non-empty stack
+        node = None
         current_token = next(self.token_iter)
 
         while current_token != self.eof:
+            if current_token.type not in NONFORMAT_TOKEN_TYPES:
+                self._stack.append(current_token)
+
+            while self._stack:
+                if current_token.type not in NONFORMAT_TOKEN_TYPES:
+                    format_token = self._stack.pop()
+                    if current_token.type != format_token.type:
+                        raise ParseError("Sorry")
+            
             current_token = next(self.token_iter)
+
+        print(self._stack)
+
+
+class ParseError(Exception):
+    pass
