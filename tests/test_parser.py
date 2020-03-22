@@ -176,7 +176,6 @@ def test_inline_quote():
     )
 
 
-@pytest.mark.skip("FIXME")
 def test_block_quote():
     text = ">>> This is a quote.\nThis should be part of it."
     tokens = tokenize(text)
@@ -184,7 +183,5 @@ def test_block_quote():
     parser.parse()
     assert_tree(
         parser.tree,
-        [
-            ast.BlockQuote(ast.Text(" This is a quote.\nThis should be part of it.")),
-        ],
+        [ast.BlockQuote(ast.Text(" This is a quote.\nThis should be part of it.")),],
     )
