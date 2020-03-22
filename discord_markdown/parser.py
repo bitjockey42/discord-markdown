@@ -48,10 +48,10 @@ class Parser:
                             )
                         else:
                             node = AST_BY_TOKEN_TYPE[current_token.type](node)
-                elif is_quote and current_token.type == TokenSpecification.NEWLINE.name:
+                elif is_quote and current_token.type in [TokenSpecification.NEWLINE.name, self.eof.type]:
+                    quote_token = self._stack.pop()
+                    node = AST_BY_TOKEN_TYPE[quote_token.type](node)
                     is_quote = False
-                    self._stack.pop()
-                    node = AST_BY_TOKEN_TYPE[TokenSpecification.INLINE_QUOTE.name](node)
                 else:
                     text_node = text_node + current_token.value
                     node = AST_BY_TOKEN_TYPE[TokenSpecification.TEXT.name](text_node)
