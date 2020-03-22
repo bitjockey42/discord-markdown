@@ -1,2 +1,10 @@
+from . import ast
+
+
 class Parser:
-    pass
+    def __init__(self, tokens):
+        self.tokens = tokens
+        self._stack = []
+
+    def parse(self):
+        pass

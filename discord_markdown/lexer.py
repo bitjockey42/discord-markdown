@@ -1,22 +1,6 @@
-import collections
 import re
 
-TOKEN_SPECIFICATION = [
-    ("CODE_BLOCK", r"`", r"{3}\w*"),
-    ("INLINE_CODE", r"`", r"{1}"),
-    ("SPOILER", r"\|", r"{2}"),
-    ("BOLD_ITALIC", r"\*", r"{3}"),
-    ("BOLD", r"\*", r"{2}"),
-    ("UNDERLINE", r"_", r"{2}"),
-    ("ITALIC", r"\*|_", r"{1}"),
-    ("STRIKETHROUGH", r"~", r"{2}"),
-    ("BLOCK_QUOTE", r">", r"{3}"),
-    ("INLINE_QUOTE", r">", r"{1}"),
-    ("NEWLINE", r"\n", ""),
-    ("SPACE", r"[ \t]+", ""),
-    ("TEXT", r"[\S\s]?", ""),
-]
-Token = collections.namedtuple("Token", ["type", "value", "line", "column"])
+from .spec import TokenSpecification, Token
 
 
 def tokenize(code, skip_newline=False):
@@ -61,7 +45,7 @@ def tokenize(code, skip_newline=False):
 
 def tokenize_generator(code, skip_newline=False):
     tok_regex = "|".join(
-        "(?P<%s>%s)%s" % token_regex for token_regex in TOKEN_SPECIFICATION
+        "(?P<%s>%s)%s" % token_spec.value for token_spec in list(TokenSpecification)
     )
     print(tok_regex)
     line_num = 1
