@@ -1,3 +1,6 @@
+from .spec import TokenSpecification
+
+
 class Text:
     HTML_TAG = None
 
@@ -56,3 +59,16 @@ class InlineQuote(FormattedText):
 
 class BlockQuote(FormattedText):
     HTML_TAG = "blockquote"
+
+
+AST_BY_TOKEN_TYPE = {
+    TokenSpecification.TEXT.name: Text,
+    TokenSpecification.BOLD.name: BoldText,
+    TokenSpecification.ITALIC.name: ItalicText,
+    TokenSpecification.UNDERLINE.name: UnderlineText,
+    TokenSpecification.STRIKETHROUGH.name: StrikethroughText,
+    TokenSpecification.BLOCK_QUOTE.name: BlockQuote,
+    TokenSpecification.INLINE_QUOTE.name: InlineQuote,
+    TokenSpecification.CODE_BLOCK.name: CodeBlock,
+    TokenSpecification.INLINE_CODE.name: InlineCode,
+}

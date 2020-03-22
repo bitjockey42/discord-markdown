@@ -1,8 +1,6 @@
 import collections
 import enum
 
-from . import ast
-
 
 Token = collections.namedtuple("Token", ["type", "value", "line", "column"])
 TokenSpec = collections.namedtuple("TokenSpec", ["name", "pattern", "instances"])
@@ -22,19 +20,6 @@ class TokenSpecification(enum.Enum):
     NEWLINE = ("NEWLINE", r"\n", "")
     SPACE = ("SPACE", r"[ \t]+", "")
     TEXT = ("TEXT", r"[\S\s]?", "")
-
-
-AST_BY_TOKEN_TYPE = {
-    TokenSpecification.TEXT.name: ast.Text,
-    TokenSpecification.BOLD.name: ast.BoldText,
-    TokenSpecification.ITALIC.name: ast.ItalicText,
-    TokenSpecification.UNDERLINE.name: ast.UnderlineText,
-    TokenSpecification.STRIKETHROUGH.name: ast.StrikethroughText,
-    TokenSpecification.BLOCK_QUOTE.name: ast.BlockQuote,
-    TokenSpecification.INLINE_QUOTE.name: ast.InlineQuote,
-    TokenSpecification.CODE_BLOCK.name: ast.CodeBlock,
-    TokenSpecification.INLINE_CODE.name: ast.InlineCode,
-}
 
 
 NONFORMAT_TOKEN_TYPES = [

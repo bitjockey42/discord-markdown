@@ -1,5 +1,4 @@
-from . import ast
-from .spec import TokenSpecification, AST_BY_TOKEN_TYPE, NONFORMAT_TOKEN_TYPES
+from .ast import AST_BY_TOKEN_TYPE
 
 
 class Parser:
@@ -21,4 +20,4 @@ class Parser:
         current_token = next(self.token_iter)
 
         while current_token != self.eof:
-            token = next(self.token_iter)
+            current_token = next(self.token_iter)
