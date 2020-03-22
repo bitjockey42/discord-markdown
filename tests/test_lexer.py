@@ -58,7 +58,7 @@ def test_bold_italic():
 
 
 def test_underline_italic():
-    text = "__*underline italics*__" 
+    text = "__*underline italics*__"
     assert tokenize(text) == [
         Token("UNDERLINE", value="__", line=1, column=0),
         Token("ITALIC", value="*", line=1, column=2),
@@ -87,7 +87,7 @@ def test_underline_bold_italics():
         Token("TEXT", value="underline bold italics", line=1, column=5),
         Token("BOLD_ITALIC", value="***", line=1, column=27),
         Token("UNDERLINE", value="__", line=1, column=30),
-    ] 
+    ]
 
 
 def test_inline_code():
@@ -96,4 +96,16 @@ def test_inline_code():
         Token("INLINE_CODE", value="`", line=1, column=0),
         Token("TEXT", value="test", line=1, column=1),
         Token("INLINE_CODE", value="`", line=1, column=5),
+    ]
+
+
+def test_code_block():
+    text = """```sh
+    echo test```"""
+    assert tokenize(text) == [
+        Token("CODE_BLOCK", value="```sh", line=1, column=0),
+        Token("NEWLINE", value="\n", line=2, column=5),
+        Token("TEXT", value="    echo test", line=2, column=0),
+        Token("CODE_BLOCK", value="```", line=2, column=13),
+        Token("TEXT", value="", line=2, column=16),
     ]
