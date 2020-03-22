@@ -5,24 +5,24 @@ from .spec import TokenSpecification, Token
 
 def tokenize(code, skip_newline=False):
     line_count = code.count("\n") + 1
-    terminal_token = Token("TERM", value="", line=line_count, column=len(code))
+    eof = Token("EOF", value="", line=line_count, column=len(code))
 
     token_iter = tokenize_generator(code, skip_newline)
-    current_token = next(token_iter, terminal_token)
+    current_token = next(token_iter, eof)
     tokens = []
     text_tokens = []
 
-    while current_token != terminal_token:
+    while current_token != eof:
         if (
-            current_token.line == terminal_token.line
-            and current_token.column == terminal_token.column
+            current_token.line == eof.line
+            and current_token.column == eof.column
             and current_token.value == ""
         ):
             break
 
         while current_token.type == "TEXT" or current_token.type == "SPACE":
             text_tokens.append(current_token)
-            current_token = next(token_iter, terminal_token)
+            current_token = next(token_iter, eof)
 
         if text_tokens:
             concat_text = [t.value for t in text_tokens]
@@ -35,10 +35,12 @@ def tokenize(code, skip_newline=False):
             text_tokens = []
             tokens.append(concat_text_token)
 
-        if current_token != terminal_token:
+        if current_token != eof:
             tokens.append(current_token)
 
-        current_token = next(token_iter, terminal_token)
+        current_token = next(token_iter, eof)
+
+    tokens.append(eof)
 
     return tokens
 
