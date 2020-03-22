@@ -119,3 +119,13 @@ def test_code_block():
         Token("CODE_BLOCK", value="```", line=2, column=13),
         Token("TEXT", value="", line=2, column=16),
     ]
+
+
+def test_spoiler():
+    text = "this is a ||spoiler||"
+    assert tokenize(text) == [
+        Token("TEXT", value="this is a ", line=1, column=0),
+        Token("SPOILER", value="||", line=1, column=10),
+        Token("TEXT", value="spoiler", line=1, column=12),
+        Token("SPOILER", value="||", line=1, column=19),
+    ]
