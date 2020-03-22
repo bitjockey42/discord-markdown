@@ -37,5 +37,12 @@ class StrikethroughText(FormattedText):
     HTML_TAG = "s"
 
 
+class InlineCode(FormattedText):
+    HTML_TAG = "code"
+
+
 class CodeBlock(FormattedText):
     HTML_TAG = "code"
+
+    def eval(self):
+        return f"<pre>{self.open}{self.value.eval()}{self.close}</pre>"
