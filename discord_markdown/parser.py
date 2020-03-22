@@ -38,7 +38,12 @@ class Parser:
                         self._stack.append(current_token)
                     else:
                         format_token = self._stack.pop()
-                        node = AST_BY_TOKEN_TYPE[current_token.type](node)
+                        if current_token.type == TokenSpecification.BOLD_ITALIC.name:
+                            node = AST_BY_TOKEN_TYPE[TokenSpecification.BOLD.name](
+                                AST_BY_TOKEN_TYPE[TokenSpecification.ITALIC.name](node)
+                            )
+                        else:
+                            node = AST_BY_TOKEN_TYPE[current_token.type](node)
                 else:
                     node = AST_BY_TOKEN_TYPE[TokenSpecification.TEXT.name](
                         current_token.value

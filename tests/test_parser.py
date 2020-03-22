@@ -29,6 +29,17 @@ def test_bold_text():
     )
 
 
+def test_bold_italics_text():
+    text = "This is ***formatted***"
+    tokens = tokenize(text)
+    parser = Parser(tokens)
+    parser.parse()
+    assert_tree(
+        parser.tree,
+        [ast.Text("This is "), ast.BoldText(ast.ItalicText(ast.Text("formatted")))],
+    )
+
+
 @pytest.mark.parametrize("text", [("This is *formatted*"), ("This is _formatted_")])
 def test_italic_text(text):
     tokens = tokenize(text)
