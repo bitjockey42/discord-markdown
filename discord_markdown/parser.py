@@ -36,23 +36,17 @@ class Parser:
                 if current_token.type not in NONFORMAT_TOKEN_TYPES:
                     if self._stack[-1].type != current_token.type:
                         self._stack.append(current_token)
-                        continue
-
-                    format_token = self._stack.pop()
-
-                    if current_token.type != format_token.type:
-                        raise ParseError(f"{current_token.type} != {format_token.type}")
-
-                    node = AST_BY_TOKEN_TYPE[current_token.type](text_node)
+                    else:
+                        format_token = self._stack.pop()
+                        node = AST_BY_TOKEN_TYPE[current_token.type](node)
                 else:
-                    text_node = AST_BY_TOKEN_TYPE[TokenSpecification.TEXT.name](
+                    node = AST_BY_TOKEN_TYPE[TokenSpecification.TEXT.name](
                         current_token.value
                     )
                 current_token = next(self.token_iter)
 
             self._tree.append(node)
 
-        print(self._stack)
         print([e.eval() for e in self._tree])
 
 
