@@ -21,6 +21,15 @@ def test_italic():
     ]
 
 
+def test_italic_alt():
+    text = "*Italic*"
+    assert tokenize(text) == [
+        Token("ITALIC", value="*", line=1, column=0),
+        Token("TEXT", value="Italic", line=1, column=1),
+        Token("ITALIC", value="*", line=1, column=7),
+    ]
+
+
 def test_underline():
     text = "__Underline__"
     assert tokenize(text) == [
