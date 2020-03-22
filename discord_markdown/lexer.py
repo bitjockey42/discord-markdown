@@ -42,8 +42,8 @@ def tokenize(code, skip_newline=True):
             )
             text_tokens = []
             tokens.append(concat_text_token)
-        else:
-            tokens.append(current_token)
+        
+        tokens.append(current_token)
 
         current_token = next(token_iter, terminal_token)
 
