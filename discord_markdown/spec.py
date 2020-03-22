@@ -27,3 +27,9 @@ NONFORMAT_TOKEN_TYPES = [
     TokenSpecification.SPACE.name,
     TokenSpecification.NEWLINE.name,
 ]
+
+
+QUOTE_TOKEN_TYPES = [
+    TokenSpecification.INLINE_QUOTE.name,
+    TokenSpecification.BLOCK_QUOTE.name,
+]

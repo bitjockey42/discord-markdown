@@ -158,16 +158,10 @@ def test_code_block():
     parser = Parser(tokens)
     parser.parse()
     assert_tree(
-        parser.tree, [
-            ast.CodeBlock(
-                ast.Text("\n    echo test\n    "),
-            ),
-            ast.Text(""),
-        ],
+        parser.tree, [ast.CodeBlock(ast.Text("\n    echo test\n    "),), ast.Text(""),],
     )
 
 
-@pytest.mark.skip("FIXME")
 def test_inline_quote():
     text = "> This is a quote.\nThis isn't part of it."
     tokens = tokenize(text)
@@ -176,7 +170,7 @@ def test_inline_quote():
     assert_tree(
         parser.tree,
         [
-            ast.InlineQuote(ast.Text(" This is a quote")),
+            ast.InlineQuote(ast.Text(" This is a quote.")),
             ast.Text("This isn't part of it."),
         ],
     )

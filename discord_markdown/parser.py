@@ -1,5 +1,5 @@
 from .ast import AST_BY_TOKEN_TYPE
-from .spec import TokenSpecification, NONFORMAT_TOKEN_TYPES
+from .spec import TokenSpecification, NONFORMAT_TOKEN_TYPES, QUOTE_TOKEN_TYPES
 
 
 class Parser:
@@ -18,9 +18,14 @@ class Parser:
         print("TOKENS", self.tokens)
         node = None
         current_token = next(self.token_iter)
+        is_quote = False
 
         while current_token != self.eof:
             text_node = ""
+
+            if current_token.type in QUOTE_TOKEN_TYPES:
+                is_quote = True
+
             if current_token.type not in NONFORMAT_TOKEN_TYPES:
                 self._stack.append(current_token)
             else:
@@ -32,7 +37,6 @@ class Parser:
 
             while self._stack:
                 print("STACK", self._stack)
-
                 if current_token.type not in NONFORMAT_TOKEN_TYPES:
                     if self._stack[-1].type != current_token.type:
                         self._stack.append(current_token)
@@ -44,6 +48,10 @@ class Parser:
                             )
                         else:
                             node = AST_BY_TOKEN_TYPE[current_token.type](node)
+                elif is_quote and current_token.type == TokenSpecification.NEWLINE.name:
+                    is_quote = False
+                    self._stack.pop()
+                    node = AST_BY_TOKEN_TYPE[TokenSpecification.INLINE_QUOTE.name](node)
                 else:
                     text_node = text_node + current_token.value
                     node = AST_BY_TOKEN_TYPE[TokenSpecification.TEXT.name](text_node)
