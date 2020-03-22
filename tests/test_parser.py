@@ -125,3 +125,18 @@ def test_strikethrough_text():
             ast.Text(" example"),
         ],
     )
+
+
+def test_inline_code():
+    text = "Run this command `echo hello`."
+    tokens = tokenize(text)
+    parser = Parser(tokens)
+    parser.parse()
+    assert_tree(
+        parser.tree,
+        [
+            ast.Text("Run this command "),
+            ast.InlineCode(ast.Text("echo hello")),
+            ast.Text("."),
+        ],
+    )
