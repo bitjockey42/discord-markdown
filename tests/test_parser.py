@@ -40,3 +40,17 @@ def test_italic_text(text):
     assert_tree(
         parser.tree, [ast.Text("This is "), ast.ItalicText(ast.Text("formatted"))]
     )
+
+
+def test_underline_text():
+    text = "An __underlined__ example"
+    tokens = tokenize(text)
+    parser = Parser(tokens)
+    parser.parse()
+    assert_tree(
+        parser.tree, [
+            ast.Text("An "),
+            ast.UnderlineText(ast.Text("underlined")),
+            ast.Text(" example"),
+        ]
+    )
