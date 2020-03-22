@@ -24,4 +24,7 @@ def test_formatted_text():
     tokens = tokenize(text)
     parser = Parser(tokens)
     parser.parse()
-    assert_tree(parser.tree, [ast.BoldText(text)])
+    assert_tree(parser.tree, [
+        ast.Text("This is "),
+        ast.BoldText("formatted"),
+    ])
