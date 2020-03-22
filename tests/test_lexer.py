@@ -129,3 +129,13 @@ def test_spoiler():
         Token("TEXT", value="spoiler", line=1, column=12),
         Token("SPOILER", value="||", line=1, column=19),
     ]
+
+
+def test_inline_quote():
+    text = "> this is part of it\nThis should not be"
+    assert tokenize(text) == [
+        Token(type="INLINE_QUOTE", value=">", line=1, column=0),
+        Token(type="TEXT", value=" this is part of it", line=1, column=1),
+        Token(type="NEWLINE", value="\n", line=2, column=20),
+        Token(type="TEXT", value="This should not be", line=2, column=0),
+    ]
