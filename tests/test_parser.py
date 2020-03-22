@@ -6,7 +6,9 @@ from discord_markdown import ast
 
 
 def assert_tree(parser_tree, expected):
-    assert [(node.value, node.HTML_TAG) for node in parser_tree] == [(e.value, e.HTML_TAG) for e in expected]
+    assert [(node.value, node.HTML_TAG) for node in parser_tree] == [
+        (e.value, e.HTML_TAG) for e in expected
+    ]
 
 
 def test_simple():

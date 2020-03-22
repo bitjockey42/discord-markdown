@@ -1,11 +1,5 @@
 from . import ast
-from .spec import TokenSpecification
-
-FORMAT_TOKEN_TYPES = [
-    TokenSpecification.BOLD.name,
-    TokenSpecification.ITALIC.name,
-    TokenSpecification.UNDERLINE.name,
-]
+from .spec import TokenSpecification, AST_BY_TOKEN_TYPE, NONFORMAT_TOKEN_TYPES
 
 
 class Parser:
@@ -24,8 +18,7 @@ class Parser:
         # If the token is a format token, add it to the stack
         # If the stack is not empty, pop
         # If the current token is a format token, pop from non-empty stack
-        token = next(self.token_iter)
+        current_token = next(self.token_iter)
 
-        while token != self.eof:
-            print(token)
+        while current_token != self.eof:
             token = next(self.token_iter)
