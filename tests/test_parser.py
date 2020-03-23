@@ -228,7 +228,6 @@ def test_code_block():
     )
 
 
-@pytest.mark.skip("FIXME")
 def test_inline_quote():
     text = "> This is a quote.\nThis isn't part of it."
     tokens = tokenize(text)

@@ -66,12 +66,7 @@ class Parser:
                     is_quote
                     and quote_token.type == TokenSpecification.INLINE_QUOTE.name
                     and current_token.type == TokenSpecification.NEWLINE.name
-                ):
-                    elem = AST_BY_TOKEN_TYPE[quote_token.type](elem)
-                    self._stack.pop()
-                    is_quote = False
-                    quote_token = None
-                elif (
+                ) or (
                     is_quote
                     and quote_token.type == TokenSpecification.BLOCK_QUOTE.name
                     and current_token.type == EOF
