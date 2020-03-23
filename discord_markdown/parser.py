@@ -1,4 +1,4 @@
-from .ast import AST_BY_TOKEN_TYPE, ParagraphText
+from .ast import AST_BY_TOKEN_TYPE, Paragraph
 from .spec import TokenSpecification, NONFORMAT_TOKEN_TYPES, QUOTE_TOKEN_TYPES, EOF
 
 
@@ -26,6 +26,7 @@ class Parser:
         quote_token = None
 
         while current_token != self.eof:
+            elems = []
             text_node = ""
 
             if current_token.type in QUOTE_TOKEN_TYPES:
@@ -38,6 +39,7 @@ class Parser:
                 node = AST_BY_TOKEN_TYPE[TokenSpecification.TEXT.name](
                     current_token.value
                 )
+                elems.append(node)
 
             current_token = next(self.token_iter)
 
@@ -78,8 +80,7 @@ class Parser:
                 if current_token != self.eof:
                     current_token = next(self.token_iter)
 
-            
-            self._tree.append(node)
+            self._tree.append(Paragraph(elems))
 
 
 class ParseError(Exception):
