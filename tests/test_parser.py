@@ -257,7 +257,6 @@ def test_block_quote():
     )
 
 
-@pytest.mark.skip("FIXME")
 def test_spoiler_text():
     text = "The FBI says ||redacted here||."
     tokens = tokenize(text)
