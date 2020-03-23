@@ -16,7 +16,7 @@ def test_plain_text():
     tokens = tokenize(text)
     parser = Parser(tokens)
     parser.parse()
-    assert_tree(parser.tree, [ast.ParagraphText(ast.Text(text))])
+    assert_tree(parser.tree, [ast.Text(text)])
 
 
 def test_paragraph_text():
@@ -27,12 +27,8 @@ def test_paragraph_text():
     assert_tree(
         parser.tree,
         [
-            ast.ParagraphText(
-                ast.Text("This is the first paragraph.")
-            ),
-            ast.ParagraphText(
-                ast.Text("This is the second one.")
-            ),
+            ast.Text("This is the first paragraph."),
+            ast.Text("This is the second one."),
         ]
     )
 
