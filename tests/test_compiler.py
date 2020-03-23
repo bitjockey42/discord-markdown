@@ -4,7 +4,7 @@ from discord_markdown.compiler import Compiler
 def test_compile_simple():
     text = "Simple example"
     compiler = Compiler(text)
-    assert compiler.compile() == "Simple example"
+    assert compiler.compile() == "<p>Simple example</p>"
 
 
 def test_compile_formatted():
@@ -12,7 +12,7 @@ def test_compile_formatted():
     compiler = Compiler(text)
     assert (
         compiler.compile()
-        == "Here I <i>am</i> in the <b>light</b> of <b><i>day</i></b>\nLet the storm rage on"
+        == "<p>Here I <i>am</i> in the <b>light</b> of <b><i>day</i></b></p><p>\nLet the storm rage on</p>"
     )
 
 

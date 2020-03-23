@@ -114,7 +114,7 @@ def test_underline_italics_text():
             ast.Paragraph(
                 [
                     ast.Text("An "),
-                    ast.UnderlineText(ast.ItalicText(ast.Text("underline italics"),)),
+                    ast.UnderlineText(ast.ItalicText(ast.Text("underline italics"))),
                     ast.Text(" example"),
                 ]
             )
@@ -133,7 +133,7 @@ def test_underline_bold_text():
             ast.Paragraph(
                 [
                     ast.Text("An "),
-                    ast.UnderlineText(ast.BoldText(ast.Text("underline bold"),)),
+                    ast.UnderlineText(ast.BoldText(ast.Text("underline bold"))),
                     ast.Text(" example"),
                 ]
             )
@@ -152,7 +152,7 @@ def test_multiple_formatted_text():
             ast.Paragraph(
                 [
                     ast.Text("An "),
-                    ast.UnderlineText(ast.ItalicText(ast.Text("underline italics"),)),
+                    ast.UnderlineText(ast.ItalicText(ast.Text("underline italics"))),
                     ast.Text(" example."),
                 ]
             ),
