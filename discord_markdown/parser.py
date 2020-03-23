@@ -90,6 +90,7 @@ class Parser:
             if elem and current_token.type != TokenSpecification.NEWLINE.name:
                 elems.append(elem)
 
+            # Create a new paragraph node since we reached the NEWLINE or EOF
             if (
                 current_token.type == TokenSpecification.NEWLINE.name
                 or current_token.type == EOF
