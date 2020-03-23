@@ -1,4 +1,4 @@
-from .ast import AST_BY_TOKEN_TYPE
+from .ast import AST_BY_TOKEN_TYPE, ParagraphText
 from .spec import TokenSpecification, NONFORMAT_TOKEN_TYPES, QUOTE_TOKEN_TYPES, EOF
 
 
@@ -78,6 +78,7 @@ class Parser:
                 if current_token != self.eof:
                     current_token = next(self.token_iter)
 
+            
             self._tree.append(node)
 
 

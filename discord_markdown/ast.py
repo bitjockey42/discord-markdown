@@ -13,7 +13,7 @@ class Text:
 
 
 class FormattedText(Text):
-    HTML_TAG = None
+    HTML_TAG = ""
 
     @property
     def open(self):
@@ -29,6 +29,10 @@ class FormattedText(Text):
 
     def eval(self):
         return f"{self.open}{self.value.eval()}{self.close}"
+
+
+class ParagraphText(FormattedText):
+    HTML_TAG = "p"
 
 
 class BoldText(FormattedText):
