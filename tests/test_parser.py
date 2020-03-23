@@ -73,14 +73,14 @@ def test_bold_italics_text():
     )
 
 
-@pytest.mark.skip("FIXME")
 @pytest.mark.parametrize("text", [("This is *formatted*"), ("This is _formatted_")])
 def test_italic_text(text):
     tokens = tokenize(text)
     parser = Parser(tokens)
     parser.parse()
     assert_tree(
-        parser.tree, [ast.Text("This is "), ast.ItalicText(ast.Text("formatted"))]
+        parser.tree,
+        [ast.Paragraph([ast.Text("This is "), ast.ItalicText(ast.Text("formatted"))]),],
     )
 
 
