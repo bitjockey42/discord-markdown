@@ -232,13 +232,12 @@ def test_inline_quote():
     assert_tree(
         parser.tree,
         [
-            ast.InlineQuote(ast.Text(" This is a quote.")),
-            ast.Text("This isn't part of it."),
+            ast.Paragraph([ast.InlineQuote(ast.Text(" This is a quote."))]),
+            ast.Paragraph([ast.Text("This isn't part of it.")]),
         ],
     )
 
 
-@pytest.mark.skip("FIXME")
 def test_block_quote():
     text = ">>> This is a quote.\nThis should be part of it."
     tokens = tokenize(text)
@@ -246,7 +245,15 @@ def test_block_quote():
     parser.parse()
     assert_tree(
         parser.tree,
-        [ast.BlockQuote(ast.Text(" This is a quote.\nThis should be part of it."))],
+        [
+            ast.Paragraph(
+                [
+                    ast.BlockQuote(
+                        ast.Text(" This is a quote.\nThis should be part of it.")
+                    )
+                ]
+            )
+        ],
     )
 
 
@@ -259,8 +266,12 @@ def test_spoiler_text():
     assert_tree(
         parser.tree,
         [
-            ast.Text("The FBI says "),
-            ast.SpoilerText(ast.Text("redacted here")),
-            ast.Text("."),
+            ast.Paragraph(
+                [
+                    ast.Text("The FBI says "),
+                    ast.SpoilerText(ast.Text("redacted here")),
+                    ast.Text("."),
+                ]
+            )
         ],
     )
