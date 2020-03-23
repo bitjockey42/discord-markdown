@@ -4,8 +4,9 @@ from .spec import TokenSpecification
 class Text:
     HTML_TAG = None
 
-    def __init__(self, value):
+    def __init__(self, value, style=None):
         self.value = value
+        self.style = style
 
     def eval(self):
         return self.value
@@ -16,7 +17,8 @@ class FormattedText(Text):
 
     @property
     def open(self):
-        return f"<{self.HTML_TAG}>" if self.HTML_TAG else ""
+        style_attrs = f"style='{self.style}'"
+        return f"<{self.HTML_TAG} {style_attrs}>" if self.HTML_TAG else ""
 
     @property
     def close(self):
