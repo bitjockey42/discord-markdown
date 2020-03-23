@@ -84,7 +84,6 @@ def test_italic_text(text):
     )
 
 
-@pytest.mark.skip("FIXME")
 def test_underline_text():
     text = "An __underlined__ example"
     tokens = tokenize(text)
@@ -93,9 +92,13 @@ def test_underline_text():
     assert_tree(
         parser.tree,
         [
-            ast.Text("An "),
-            ast.UnderlineText(ast.Text("underlined")),
-            ast.Text(" example"),
+            ast.Paragraph(
+                [
+                    ast.Text("An "),
+                    ast.UnderlineText(ast.Text("underlined")),
+                    ast.Text(" example"),
+                ]
+            )
         ],
     )
 
