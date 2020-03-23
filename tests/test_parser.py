@@ -30,8 +30,8 @@ def test_paragraph_text():
         parser.tree,
         [
             ast.Paragraph([ast.Text("This is the first paragraph.")]),
-            ast.Paragraph([ast.Text("\nThis is the second one.")]),
-            ast.Paragraph([ast.Text("\nThis is the third one.")]),
+            ast.Paragraph([ast.Text("\n"), ast.Text("This is the second one.")]),
+            ast.Paragraph([ast.Text("\n"), ast.Text("This is the third one.")]),
         ],
     )
 
@@ -103,7 +103,6 @@ def test_underline_text():
     )
 
 
-@pytest.mark.skip("FIXME")
 def test_underline_italics_text():
     text = "An __*underline italics*__ example"
     tokens = tokenize(text)
@@ -112,9 +111,13 @@ def test_underline_italics_text():
     assert_tree(
         parser.tree,
         [
-            ast.Text("An "),
-            ast.UnderlineText(ast.ItalicText(ast.Text("underline italics"),)),
-            ast.Text(" example"),
+            ast.Paragraph(
+                [
+                    ast.Text("An "),
+                    ast.UnderlineText(ast.ItalicText(ast.Text("underline italics"),)),
+                    ast.Text(" example"),
+                ]
+            )
         ],
     )
 
@@ -128,14 +131,17 @@ def test_underline_bold_text():
     assert_tree(
         parser.tree,
         [
-            ast.Text("An "),
-            ast.UnderlineText(ast.BoldText(ast.Text("underline bold"),)),
-            ast.Text(" example"),
+            ast.Paragraph(
+                [
+                    ast.Text("An "),
+                    ast.UnderlineText(ast.BoldText(ast.Text("underline bold"),)),
+                    ast.Text(" example"),
+                ]
+            )
         ],
     )
 
 
-@pytest.mark.skip("FIXME")
 def test_multiple_formatted_text():
     text = "An __*underline italics*__ example.\nI **am** depressed."
     tokens = tokenize(text)
@@ -144,13 +150,21 @@ def test_multiple_formatted_text():
     assert_tree(
         parser.tree,
         [
-            ast.Text("An "),
-            ast.UnderlineText(ast.ItalicText(ast.Text("underline italics"),)),
-            ast.Text(" example."),
-            ast.Text("\n"),
-            ast.Text("I "),
-            ast.BoldText(ast.Text("am")),
-            ast.Text(" depressed."),
+            ast.Paragraph(
+                [
+                    ast.Text("An "),
+                    ast.UnderlineText(ast.ItalicText(ast.Text("underline italics"),)),
+                    ast.Text(" example."),
+                ]
+            ),
+            ast.Paragraph(
+                [
+                    ast.Text("\n"),
+                    ast.Text("I "),
+                    ast.BoldText(ast.Text("am")),
+                    ast.Text(" depressed."),
+                ]
+            ),
         ],
     )
 
