@@ -24,10 +24,12 @@ class Parser:
         current_token = next(self.token_iter)
         is_quote = False
         quote_token = None
+        create_paragraph = False
+        elems = []
 
         while current_token != self.eof:
-            elems = []
             text_node = ""
+            elem = None
 
             if current_token.type in QUOTE_TOKEN_TYPES:
                 is_quote = True
@@ -43,24 +45,25 @@ class Parser:
 
             current_token = next(self.token_iter)
 
-            while self._stack:
+            # Group specific formatted text into a single node
+            while self._stack and not create_paragraph:
                 if current_token.type not in NONFORMAT_TOKEN_TYPES:
                     if self._stack[-1].type != current_token.type:
                         self._stack.append(current_token)
                     else:
                         format_token = self._stack.pop()
                         if current_token.type == TokenSpecification.BOLD_ITALIC.name:
-                            node = AST_BY_TOKEN_TYPE[TokenSpecification.BOLD.name](
-                                AST_BY_TOKEN_TYPE[TokenSpecification.ITALIC.name](node)
+                            elem = AST_BY_TOKEN_TYPE[TokenSpecification.BOLD.name](
+                                AST_BY_TOKEN_TYPE[TokenSpecification.ITALIC.name](elem)
                             )
                         else:
-                            node = AST_BY_TOKEN_TYPE[current_token.type](node)
+                            elem = AST_BY_TOKEN_TYPE[current_token.type](elem)
                 elif (
                     is_quote
                     and quote_token.type == TokenSpecification.INLINE_QUOTE.name
                     and current_token.type == TokenSpecification.NEWLINE.name
                 ):
-                    node = AST_BY_TOKEN_TYPE[quote_token.type](node)
+                    elem = AST_BY_TOKEN_TYPE[quote_token.type](elem)
                     self._stack.pop()
                     is_quote = False
                     quote_token = None
@@ -69,18 +72,29 @@ class Parser:
                     and quote_token.type == TokenSpecification.BLOCK_QUOTE.name
                     and current_token.type == EOF
                 ):
-                    node = AST_BY_TOKEN_TYPE[quote_token.type](node)
+                    elem = AST_BY_TOKEN_TYPE[quote_token.type](elem)
                     self._stack.pop()
                     is_quote = False
                     quote_token = None
                 else:
                     text_node = text_node + current_token.value
-                    node = AST_BY_TOKEN_TYPE[TokenSpecification.TEXT.name](text_node)
+                    elem = AST_BY_TOKEN_TYPE[TokenSpecification.TEXT.name](text_node)
 
                 if current_token != self.eof:
                     current_token = next(self.token_iter)
 
-            self._tree.append(Paragraph(elems))
+            if elem and elem.type != TokenSpecification.NEWLINE.name:
+                elems.append(elem)
+
+            if current_token.type == TokenSpecification.NEWLINE.name or current_token.type == EOF:
+                print("ELEMS", elems)
+                print("Did this work")
+                node = Paragraph(elems)
+                elems = []
+
+            self._tree.append(node)
+
+            print("TREE", self._tree)
 
 
 class ParseError(Exception):
