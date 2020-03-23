@@ -36,7 +36,6 @@ def test_paragraph_text():
     )
 
 
-@pytest.mark.skip("FIXME")
 def test_bold_text():
     text = "This is **formatted**"
     tokens = tokenize(text)
