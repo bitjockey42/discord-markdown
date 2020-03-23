@@ -14,6 +14,10 @@ class Parser:
     def tree(self):
         return self._tree
 
+    def print(self):
+        for node in self.tree:
+            print(node.eval(), end="")
+
     def parse(self):
         print("TOKENS", self.tokens)
         self.token_iter = iter(self.tokens)
