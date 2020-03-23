@@ -27,10 +27,16 @@ def test_compile_code_block():
 def test_compile_block_quote():
     text = ">>> This is a quote.\nThis should be part of it."
     compiler = Compiler(text)
-    assert compiler.compile() == "<blockquote> This is a quote.\nThis should be part of it.</blockquote>"
+    assert (
+        compiler.compile()
+        == "<blockquote> This is a quote.\nThis should be part of it.</blockquote>"
+    )
 
 
 def test_compile_inline_quote():
     text = "> This is a quote.\nAnd this should not be part of it"
     compiler = Compiler(text)
-    assert compiler.compile() == "<q> This is a quote.</q>And this should not be part of it"
+    assert (
+        compiler.compile()
+        == "<q> This is a quote.</q>And this should not be part of it"
+    )

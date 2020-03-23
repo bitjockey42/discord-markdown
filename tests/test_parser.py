@@ -20,7 +20,9 @@ def test_plain_text():
 
 
 def test_paragraph_text():
-    text = "This is the first paragraph.\nThis is the second one."
+    text = (
+        "This is the first paragraph.\nThis is the second one.\nThis is the third one."
+    )
     tokens = tokenize(text)
     parser = Parser(tokens)
     parser.parse()
@@ -28,8 +30,11 @@ def test_paragraph_text():
         parser.tree,
         [
             ast.Paragraph([ast.Text("This is the first paragraph.")]),
-            ast.Paragraph([ast.Text("This is the second one.")]),
-        ]
+            ast.Text("\n"),
+            ast.Paragraph([ast.Text("\nThis is the second one.")]),
+            ast.Text("\n"),
+            ast.Paragraph([ast.Text("\nThis is the third one.")]),
+        ],
     )
 
 
@@ -40,13 +45,10 @@ def test_bold_text():
     parser = Parser(tokens)
     parser.parse()
     assert_tree(
-        parser.tree, [
-            ast.Paragraph([
-                ast.Text("This is "),
-                ast.BoldText(ast.Text("formatted"))
-            ])
-        ]
+        parser.tree,
+        [ast.Paragraph([ast.Text("This is "), ast.BoldText(ast.Text("formatted"))])],
     )
+
 
 @pytest.mark.skip("FIXME")
 def test_bold_alt_text():
@@ -55,6 +57,7 @@ def test_bold_alt_text():
     parser = Parser(tokens)
     parser.parse()
     assert_tree(parser.tree, [ast.BoldText(ast.Text("formatted")),])
+
 
 @pytest.mark.skip("FIXME")
 def test_bold_italics_text():
@@ -67,6 +70,7 @@ def test_bold_italics_text():
         [ast.Text("This is "), ast.BoldText(ast.ItalicText(ast.Text("formatted")))],
     )
 
+
 @pytest.mark.skip("FIXME")
 @pytest.mark.parametrize("text", [("This is *formatted*"), ("This is _formatted_")])
 def test_italic_text(text):
@@ -76,6 +80,7 @@ def test_italic_text(text):
     assert_tree(
         parser.tree, [ast.Text("This is "), ast.ItalicText(ast.Text("formatted"))]
     )
+
 
 @pytest.mark.skip("FIXME")
 def test_underline_text():
@@ -92,6 +97,7 @@ def test_underline_text():
         ],
     )
 
+
 @pytest.mark.skip("FIXME")
 def test_underline_italics_text():
     text = "An __*underline italics*__ example"
@@ -107,6 +113,7 @@ def test_underline_italics_text():
         ],
     )
 
+
 @pytest.mark.skip("FIXME")
 def test_underline_bold_text():
     text = "An __**underline bold**__ example"
@@ -121,6 +128,7 @@ def test_underline_bold_text():
             ast.Text(" example"),
         ],
     )
+
 
 @pytest.mark.skip("FIXME")
 def test_multiple_formatted_text():
@@ -141,6 +149,7 @@ def test_multiple_formatted_text():
         ],
     )
 
+
 @pytest.mark.skip("FIXME")
 def test_strikethrough_text():
     text = "A ~~strikethrough~~ example"
@@ -155,6 +164,7 @@ def test_strikethrough_text():
             ast.Text(" example"),
         ],
     )
+
 
 @pytest.mark.skip("FIXME")
 def test_inline_code():
@@ -171,6 +181,7 @@ def test_inline_code():
         ],
     )
 
+
 @pytest.mark.skip("FIXME")
 def test_code_block():
     text = """```sh
@@ -182,6 +193,7 @@ def test_code_block():
     assert_tree(
         parser.tree, [ast.CodeBlock(ast.Text("\n    echo test\n    "),), ast.Text(""),],
     )
+
 
 @pytest.mark.skip("FIXME")
 def test_inline_quote():
@@ -197,6 +209,7 @@ def test_inline_quote():
         ],
     )
 
+
 @pytest.mark.skip("FIXME")
 def test_block_quote():
     text = ">>> This is a quote.\nThis should be part of it."
@@ -207,6 +220,7 @@ def test_block_quote():
         parser.tree,
         [ast.BlockQuote(ast.Text(" This is a quote.\nThis should be part of it."))],
     )
+
 
 @pytest.mark.skip("FIXME")
 def test_spoiler_text():

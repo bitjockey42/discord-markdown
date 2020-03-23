@@ -27,6 +27,8 @@ class Parser:
         create_paragraph = False
         elems = []
 
+        print("TOKENS", self.tokens)
+
         while current_token != self.eof:
             text_node = ""
             elem = None
@@ -86,7 +88,10 @@ class Parser:
             if elem and elem.type != TokenSpecification.NEWLINE.name:
                 elems.append(elem)
 
-            if current_token.type == TokenSpecification.NEWLINE.name or current_token.type == EOF:
+            if (
+                current_token.type == TokenSpecification.NEWLINE.name
+                or current_token.type == EOF
+            ):
                 print("ELEMS", elems)
                 print("Did this work")
                 node = Paragraph(elems)
