@@ -16,6 +16,7 @@ class Parser:
 
     def parse(self):
         print("TOKENS", self.tokens)
+        self.token_iter = iter(self.tokens)
         node = None
         current_token = next(self.token_iter)
         is_quote = False
@@ -50,20 +51,7 @@ class Parser:
                             )
                         else:
                             node = AST_BY_TOKEN_TYPE[current_token.type](node)
-                elif (
-                    is_quote
-                    and quote_token.type == TokenSpecification.INLINE_QUOTE.name
-                    and current_token.type == TokenSpecification.NEWLINE.name
-                ):
-                    node = AST_BY_TOKEN_TYPE[quote_token.type](node)
-                    self._stack.pop()
-                    is_quote = False
-                    quote_token = None
-                elif (
-                    is_quote
-                    and quote_token.type == TokenSpecification.BLOCK_QUOTE.name
-                    and current_token.type == self.eof.type
-                ):
+                elif is_quote and quote_token.type == TokenSpecification.INLINE_QUOTE.name and current_token.type == TokenSpecification.NEWLINE.name:
                     node = AST_BY_TOKEN_TYPE[quote_token.type](node)
                     self._stack.pop()
                     is_quote = False
@@ -72,7 +60,8 @@ class Parser:
                     text_node = text_node + current_token.value
                     node = AST_BY_TOKEN_TYPE[TokenSpecification.TEXT.name](text_node)
 
-                current_token = next(self.token_iter)
+                if current_token != self.eof:
+                    current_token = next(self.token_iter)
 
             self._tree.append(node)
 
