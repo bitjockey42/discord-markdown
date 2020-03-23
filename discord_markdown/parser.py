@@ -55,9 +55,11 @@ class Parser:
                     else:
                         format_token = self._stack.pop()
                         if current_token.type == TokenSpecification.BOLD_ITALIC.name:
+                            print("BOLD ITALIC THING")
                             elem = AST_BY_TOKEN_TYPE[TokenSpecification.BOLD.name](
                                 AST_BY_TOKEN_TYPE[TokenSpecification.ITALIC.name](elem)
                             )
+                            elems.append(elem)
                         else:
                             elem = AST_BY_TOKEN_TYPE[current_token.type](elem)
                 elif (
