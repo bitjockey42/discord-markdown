@@ -19,7 +19,6 @@ class Parser:
             print(node.eval(), end="")
 
     def parse(self):
-        print("TOKENS", self.tokens)
         self.token_iter = iter(self.tokens)
         node = None
         current_token = next(self.token_iter)
@@ -43,7 +42,6 @@ class Parser:
             current_token = next(self.token_iter)
 
             while self._stack:
-                print("STACK", self._stack)
                 if current_token.type not in NONFORMAT_TOKEN_TYPES:
                     if self._stack[-1].type != current_token.type:
                         self._stack.append(current_token)
@@ -81,8 +79,6 @@ class Parser:
                     current_token = next(self.token_iter)
 
             self._tree.append(node)
-
-        print([e.eval() for e in self._tree])
 
 
 class ParseError(Exception):
