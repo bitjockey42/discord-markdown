@@ -168,7 +168,6 @@ def test_multiple_formatted_text():
     )
 
 
-@pytest.mark.skip("FIXME")
 def test_strikethrough_text():
     text = "A ~~strikethrough~~ example"
     tokens = tokenize(text)
@@ -177,14 +176,17 @@ def test_strikethrough_text():
     assert_tree(
         parser.tree,
         [
-            ast.Text("A "),
-            ast.StrikethroughText(ast.Text("strikethrough")),
-            ast.Text(" example"),
+            ast.Paragraph(
+                [
+                    ast.Text("A "),
+                    ast.StrikethroughText(ast.Text("strikethrough")),
+                    ast.Text(" example"),
+                ]
+            )
         ],
     )
 
 
-@pytest.mark.skip("FIXME")
 def test_inline_code():
     text = "Run this command `echo hello`."
     tokens = tokenize(text)
@@ -193,9 +195,13 @@ def test_inline_code():
     assert_tree(
         parser.tree,
         [
-            ast.Text("Run this command "),
-            ast.InlineCode(ast.Text("echo hello")),
-            ast.Text("."),
+            ast.Paragraph(
+                [
+                    ast.Text("Run this command "),
+                    ast.InlineCode(ast.Text("echo hello")),
+                    ast.Text("."),
+                ]
+            )
         ],
     )
 
