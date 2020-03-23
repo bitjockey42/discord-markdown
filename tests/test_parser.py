@@ -176,7 +176,7 @@ def test_inline_quote():
     )
 
 
-@pytest.mark.skip("FIXME")
+@pytest.mark.skip("FIXMEd")
 def test_block_quote():
     text = ">>> This is a quote.\nThis should be part of it."
     tokens = tokenize(text)

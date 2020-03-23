@@ -51,7 +51,11 @@ class Parser:
                             )
                         else:
                             node = AST_BY_TOKEN_TYPE[current_token.type](node)
-                elif is_quote and quote_token.type == TokenSpecification.INLINE_QUOTE.name and current_token.type == TokenSpecification.NEWLINE.name:
+                elif (
+                    is_quote
+                    and quote_token.type == TokenSpecification.INLINE_QUOTE.name
+                    and current_token.type == TokenSpecification.NEWLINE.name
+                ):
                     node = AST_BY_TOKEN_TYPE[quote_token.type](node)
                     self._stack.pop()
                     is_quote = False
