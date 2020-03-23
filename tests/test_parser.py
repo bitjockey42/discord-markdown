@@ -122,7 +122,6 @@ def test_underline_italics_text():
     )
 
 
-@pytest.mark.skip("FIXME")
 def test_underline_bold_text():
     text = "An __**underline bold**__ example"
     tokens = tokenize(text)
