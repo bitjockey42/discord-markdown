@@ -92,6 +92,7 @@ class Parser:
                 current_token.type == TokenSpecification.NEWLINE.name
                 or current_token.type == EOF
             ):
+                print("ELEMS", "".join([e.eval() for e in elems]))
                 print("ELEMS", elems)
                 print("Did this work")
                 node = Paragraph(elems)

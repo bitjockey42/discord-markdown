@@ -56,7 +56,7 @@ def test_bold_alt_text():
 
 
 def test_bold_italics_text():
-    text = "This is ***formatted***"
+    text = "This is ***formatted*** text also *this*.\nWhat in tarnation"
     tokens = tokenize(text)
     parser = Parser(tokens)
     parser.parse()
@@ -67,7 +67,13 @@ def test_bold_italics_text():
                 [
                     ast.Text("This is "),
                     ast.BoldText(ast.ItalicText(ast.Text("formatted"))),
+                    ast.Text(" text also "),
+                    ast.ItalicText(ast.Text("this")),
+                    ast.Text("."),
                 ]
+            ),
+            ast.Paragraph(
+                [ast.Text("\nWhat in tarnation")]
             )
         ],
     )
