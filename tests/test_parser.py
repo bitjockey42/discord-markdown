@@ -30,9 +30,7 @@ def test_paragraph_text():
         parser.tree,
         [
             ast.Paragraph([ast.Text("This is the first paragraph.")]),
-            ast.Text("\n"),
             ast.Paragraph([ast.Text("\nThis is the second one.")]),
-            ast.Text("\n"),
             ast.Paragraph([ast.Text("\nThis is the third one.")]),
         ],
     )

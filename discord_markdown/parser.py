@@ -85,7 +85,7 @@ class Parser:
                 if current_token != self.eof:
                     current_token = next(self.token_iter)
 
-            if elem and elem.type != TokenSpecification.NEWLINE.name:
+            if elem and current_token.type != TokenSpecification.NEWLINE.name:
                 elems.append(elem)
 
             if (
@@ -95,9 +95,8 @@ class Parser:
                 print("ELEMS", elems)
                 print("Did this work")
                 node = Paragraph(elems)
+                self._tree.append(node)
                 elems = []
-
-            self._tree.append(node)
 
             print("TREE", self._tree)
 
