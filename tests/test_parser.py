@@ -70,16 +70,10 @@ def test_bold_italics_text():
                     ast.Text(" in the "),
                     ast.BoldText(ast.Text("light")),
                     ast.Text(" of "),
-                    ast.BoldText(
-                        ast.ItalicText(
-                            ast.Text("day")
-                        )
-                    )
+                    ast.BoldText(ast.ItalicText(ast.Text("day"))),
                 ]
             ),
-            ast.Paragraph(
-                [ast.Text("\nLet the storm rage on")]
-            )
+            ast.Paragraph([ast.Text("\nLet the storm rage on")]),
         ],
     )
 
