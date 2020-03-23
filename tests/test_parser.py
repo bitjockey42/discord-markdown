@@ -206,7 +206,6 @@ def test_inline_code():
     )
 
 
-@pytest.mark.skip("FIXME")
 def test_code_block():
     text = """```sh
     echo test
@@ -215,7 +214,12 @@ def test_code_block():
     parser = Parser(tokens)
     parser.parse()
     assert_tree(
-        parser.tree, [ast.CodeBlock(ast.Text("\n    echo test\n    "),), ast.Text(""),],
+        parser.tree,
+        [
+            ast.Paragraph(
+                [ast.CodeBlock(ast.Text("\n    echo test\n    ")), ast.Text("")]
+            )
+        ],
     )
 
 
