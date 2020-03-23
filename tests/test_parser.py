@@ -47,16 +47,14 @@ def test_bold_text():
     )
 
 
-@pytest.mark.skip("FIXME")
 def test_bold_alt_text():
     text = "**formatted**"
     tokens = tokenize(text)
     parser = Parser(tokens)
     parser.parse()
-    assert_tree(parser.tree, [ast.BoldText(ast.Text("formatted")),])
+    assert_tree(parser.tree, [ast.Paragraph([ast.BoldText(ast.Text("formatted"))])])
 
 
-@pytest.mark.skip("FIXME")
 def test_bold_italics_text():
     text = "This is ***formatted***"
     tokens = tokenize(text)
@@ -64,7 +62,14 @@ def test_bold_italics_text():
     parser.parse()
     assert_tree(
         parser.tree,
-        [ast.Text("This is "), ast.BoldText(ast.ItalicText(ast.Text("formatted")))],
+        [
+            ast.Paragraph(
+                [
+                    ast.Text("This is "),
+                    ast.BoldText(ast.ItalicText(ast.Text("formatted"))),
+                ]
+            )
+        ],
     )
 
 
