@@ -198,5 +198,5 @@ def test_spoiler_text():
             ast.Text("The FBI says "),
             ast.SpoilerText(ast.Text("redacted here")),
             ast.Text("."),
-        ]
+        ],
     )

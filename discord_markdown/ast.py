@@ -17,8 +17,11 @@ class FormattedText(Text):
 
     @property
     def open(self):
-        style_attrs = f"style='{self.style}'"
-        return f"<{self.HTML_TAG} {style_attrs}>" if self.HTML_TAG else ""
+        if self.style:
+            open_tag = f"<{self.HTML_TAG} style='{self.style}'>"
+        else:
+            open_tag = f"<{self.HTML_TAG}>"
+        return open_tag if self.HTML_TAG else ""
 
     @property
     def close(self):
@@ -65,6 +68,9 @@ class BlockQuote(FormattedText):
 
 class SpoilerText(FormattedText):
     HTML_TAG = "span"
+
+    def __init__(self, value, style="color: black; background: black;"):
+        super().__init__(value, style=style)
 
 
 AST_BY_TOKEN_TYPE = {
