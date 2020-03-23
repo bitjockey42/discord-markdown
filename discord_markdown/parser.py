@@ -1,5 +1,5 @@
 from .ast import AST_BY_TOKEN_TYPE
-from .spec import TokenSpecification, NONFORMAT_TOKEN_TYPES, QUOTE_TOKEN_TYPES
+from .spec import TokenSpecification, NONFORMAT_TOKEN_TYPES, QUOTE_TOKEN_TYPES, EOF
 
 
 class Parser:
@@ -63,7 +63,7 @@ class Parser:
                 elif (
                     is_quote
                     and quote_token.type == TokenSpecification.BLOCK_QUOTE.name
-                    and current_token.type == self.eof.type
+                    and current_token.type == EOF
                 ):
                     node = AST_BY_TOKEN_TYPE[quote_token.type](node)
                     self._stack.pop()

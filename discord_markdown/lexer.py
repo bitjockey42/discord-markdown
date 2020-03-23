@@ -1,11 +1,11 @@
 import re
 
-from .spec import TokenSpecification, Token
+from .spec import TokenSpecification, Token, EOF
 
 
 def tokenize(code, skip_newline=False):
     line_count = code.count("\n") + 1
-    eof = Token("EOF", value="", line=line_count, column=len(code))
+    eof = Token(EOF, value="", line=line_count, column=len(code))
 
     token_iter = tokenize_generator(code, skip_newline)
     current_token = next(token_iter, eof)

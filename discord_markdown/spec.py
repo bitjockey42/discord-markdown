@@ -2,6 +2,8 @@ import collections
 import enum
 
 
+EOF = "EOF"
+
 Token = collections.namedtuple("Token", ["type", "value", "line", "column"])
 TokenSpec = collections.namedtuple("TokenSpec", ["name", "pattern", "instances"])
 
@@ -26,7 +28,7 @@ NONFORMAT_TOKEN_TYPES = [
     TokenSpecification.TEXT.name,
     TokenSpecification.SPACE.name,
     TokenSpecification.NEWLINE.name,
-    "EOF",
+    EOF,
 ]
 
 
