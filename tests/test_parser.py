@@ -119,7 +119,7 @@ def test_underline_bold_text():
 
 
 def test_multiple_formatted_text():
-    text = "An __*underline italics*__ example. I **am** depressed."
+    text = "An __*underline italics*__ example.\nI **am** depressed."
     tokens = tokenize(text)
     parser = Parser(tokens)
     parser.parse()
@@ -128,7 +128,9 @@ def test_multiple_formatted_text():
         [
             ast.Text("An "),
             ast.UnderlineText(ast.ItalicText(ast.Text("underline italics"),)),
-            ast.Text(" example. I "),
+            ast.Text(" example."),
+            ast.Text("\n"),
+            ast.Text("I "),
             ast.BoldText(ast.Text("am")),
             ast.Text(" depressed."),
         ],
