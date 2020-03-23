@@ -28,6 +28,7 @@ def test_paragraph_text():
         parser.tree,
         [
             ast.Text("This is the first paragraph."),
+            ast.Text("\n"),
             ast.Text("This is the second one."),
         ]
     )
