@@ -30,4 +30,4 @@ class Compiler:
         self._parser.parse()
         for node in self._parser.tree:
             self._code = self._code + node.eval()
-        return self._code 
+        return self._code
