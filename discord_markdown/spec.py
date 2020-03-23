@@ -26,6 +26,7 @@ NONFORMAT_TOKEN_TYPES = [
     TokenSpecification.TEXT.name,
     TokenSpecification.SPACE.name,
     TokenSpecification.NEWLINE.name,
+    "EOF",
 ]
 
 

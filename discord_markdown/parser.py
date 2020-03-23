@@ -60,6 +60,15 @@ class Parser:
                     self._stack.pop()
                     is_quote = False
                     quote_token = None
+                elif (
+                    is_quote
+                    and quote_token.type == TokenSpecification.BLOCK_QUOTE.name
+                    and current_token.type == self.eof.type
+                ):
+                    node = AST_BY_TOKEN_TYPE[quote_token.type](node)
+                    self._stack.pop()
+                    is_quote = False
+                    quote_token = None
                 else:
                     text_node = text_node + current_token.value
                     node = AST_BY_TOKEN_TYPE[TokenSpecification.TEXT.name](text_node)
