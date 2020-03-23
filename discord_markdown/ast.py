@@ -61,6 +61,10 @@ class BlockQuote(FormattedText):
     HTML_TAG = "blockquote"
 
 
+class SpoilerText(FormattedText):
+    HTML_TAG = "span"
+
+
 AST_BY_TOKEN_TYPE = {
     TokenSpecification.TEXT.name: Text,
     TokenSpecification.BOLD.name: BoldText,
@@ -71,4 +75,5 @@ AST_BY_TOKEN_TYPE = {
     TokenSpecification.INLINE_QUOTE.name: InlineQuote,
     TokenSpecification.CODE_BLOCK.name: CodeBlock,
     TokenSpecification.INLINE_CODE.name: InlineCode,
+    TokenSpecification.SPOILER.name: SpoilerText,
 }

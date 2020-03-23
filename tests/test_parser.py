@@ -185,3 +185,18 @@ def test_block_quote():
         parser.tree,
         [ast.BlockQuote(ast.Text(" This is a quote.\nThis should be part of it."))],
     )
+
+
+def test_spoiler_text():
+    text = "The FBI says ||redacted here||."
+    tokens = tokenize(text)
+    parser = Parser(tokens)
+    parser.parse()
+    assert_tree(
+        parser.tree,
+        [
+            ast.Text("The FBI says "),
+            ast.SpoilerText(ast.Text("redacted here")),
+            ast.Text("."),
+        ]
+    )
