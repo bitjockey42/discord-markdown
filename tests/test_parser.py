@@ -30,8 +30,8 @@ def test_paragraph_text():
         parser.tree,
         [
             ast.Paragraph([ast.Text("This is the first paragraph.")]),
-            ast.Paragraph([ast.Text("\n"), ast.Text("This is the second one.")]),
-            ast.Paragraph([ast.Text("\n"), ast.Text("This is the third one.")]),
+            ast.Paragraph([ast.Text("This is the second one.")]),
+            ast.Paragraph([ast.Text("This is the third one.")]),
         ],
     )
 
@@ -73,7 +73,7 @@ def test_bold_italics_text():
                     ast.BoldText(ast.ItalicText(ast.Text("day"))),
                 ]
             ),
-            ast.Paragraph([ast.Text("\nLet the storm rage on")]),
+            ast.Paragraph([ast.Text("Let the storm rage on")]),
         ],
     )
 
@@ -162,12 +162,7 @@ def test_multiple_formatted_text():
                 ]
             ),
             ast.Paragraph(
-                [
-                    ast.Text("\n"),
-                    ast.Text("I "),
-                    ast.BoldText(ast.Text("am")),
-                    ast.Text(" depressed."),
-                ]
+                [ast.Text("I "), ast.BoldText(ast.Text("am")), ast.Text(" depressed."),]
             ),
         ],
     )

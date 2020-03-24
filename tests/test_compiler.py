@@ -14,7 +14,7 @@ def test_compile_formatted():
     compiler = Compiler(text)
     assert (
         compiler.compile()
-        == "<p>Here I <i>am</i> in the <b>light</b> of <b><i>day</i></b></p><p>\nLet the storm rage on</p>"
+        == "<p>Here I <i>am</i> in the <b>light</b> of <b><i>day</i></b></p><p>Let the storm rage on</p>"
     )
 
 

@@ -41,10 +41,11 @@ class Parser:
             if current_token.type not in NONFORMAT_TOKEN_TYPES:
                 self._stack.append(current_token)
             else:
-                node = AST_BY_TOKEN_TYPE[TokenSpecification.TEXT.name](
-                    current_token.value
-                )
-                elems.append(node)
+                if current_token.type != TokenSpecification.NEWLINE.name:
+                    node = AST_BY_TOKEN_TYPE[TokenSpecification.TEXT.name](
+                        current_token.value
+                    )
+                    elems.append(node)
 
             current_token = next(self.token_iter)
 
