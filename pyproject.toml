@@ -1,7 +1,8 @@
 [tool.poetry]
 name = "discord_markdown"
 version = "0.1.0"
-description = ""
+description = "Convert discord messages to HTML"
+license = "MIT"
 authors = ["BitJockey <bitjockey@jackpoint.network>"]
 
 [tool.poetry.dependencies]
