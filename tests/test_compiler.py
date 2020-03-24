@@ -35,7 +35,6 @@ def test_compile_block_quote():
     )
 
 
-@pytest.mark.skip("FIXME")
 def test_compile_inline_quote():
     text = "> This is a quote.\nAnd this should not be part of it"
     compiler = Compiler(text)

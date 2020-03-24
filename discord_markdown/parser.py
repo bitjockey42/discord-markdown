@@ -99,6 +99,7 @@ class Parser:
                 node = Paragraph(elems)
                 self._tree.append(node)
                 elems = []
+                end_quote = False
 
             print("TREE", self._tree)
 
