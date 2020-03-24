@@ -59,11 +59,14 @@ class Parser:
                         if current_token.type == TokenSpecification.BOLD_ITALIC.name:
                             print("BOLD ITALIC THING")
                             elem = AST_BY_TOKEN_TYPE[TokenSpecification.BOLD.name](
-                                AST_BY_TOKEN_TYPE[TokenSpecification.ITALIC.name](elem)
+                                AST_BY_TOKEN_TYPE[TokenSpecification.ITALIC.name](elem),
+                                md_tag="**",
                             )
                             elems.append(elem)
                         else:
-                            elem = AST_BY_TOKEN_TYPE[current_token.type](elem)
+                            elem = AST_BY_TOKEN_TYPE[format_token.type](
+                                elem, md_tag=format_token.value
+                            )
                 elif (
                     is_quote
                     and quote_token.type == TokenSpecification.INLINE_QUOTE.name
@@ -73,7 +76,9 @@ class Parser:
                     and quote_token.type == TokenSpecification.BLOCK_QUOTE.name
                     and current_token.type == EOF
                 ):
-                    elem = AST_BY_TOKEN_TYPE[quote_token.type](elem)
+                    elem = AST_BY_TOKEN_TYPE[quote_token.type](
+                        elem, md_tag=quote_token.value
+                    )
                     self._stack.pop()
                     is_quote = False
                     end_quote = True
