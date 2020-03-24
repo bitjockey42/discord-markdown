@@ -1,9 +1,11 @@
 [tool.poetry]
 name = "discord_markdown"
-version = "0.2.0"
+version = "0.2.1"
 description = "Convert discord messages to HTML"
 license = "MIT"
 authors = ["BitJockey <bitjockey@jackpoint.network>"]
+readme = "README.md"
+repository = "https://github.com/bitjockey42/discord-markdown"
 
 [tool.poetry.dependencies]
 python = "^3.6"
