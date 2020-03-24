@@ -28,6 +28,8 @@ class Compiler:
 
     def compile(self, markdown=False):
         self._parser.parse()
+        code = ""
         for node in self._parser.tree:
-            self._code = self._code + node.eval(markdown=markdown)
+            code = code + node.eval(markdown=markdown)
+        self._code = code.strip()
         return self._code
