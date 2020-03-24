@@ -3,13 +3,26 @@ from .spec import TokenSpecification
 
 class Paragraph:
     HTML_TAG = "p"
+    MD_TAG = ""
 
     def __init__(self, elements):
         self.elements = elements
 
+    def open(self, markdown=False):
+        if markdown:
+            return self.MD_TAG
+        else:
+            return f"<{self.HTML_TAG}>"
+
+    def close(self, markdown=False):
+        if markdown:
+            return self.MD_TAG
+        else:
+            return f"</{self.HTML_TAG}>"
+
     def eval(self, markdown=False):
-        evaluated = "".join([elem.eval() for elem in self.elements])
-        return f"<{self.HTML_TAG}>{evaluated}</{self.HTML_TAG}>"
+        evaluated = "".join([elem.eval(markdown) for elem in self.elements])
+        return f"{self.open(markdown)}{evaluated}{self.close(markdown)}"
 
 
 class Text:
@@ -26,6 +39,7 @@ class Text:
 class FormattedText(Text):
     HTML_TAG = ""
     MD_TAG = ""
+    HAS_CLOSE_MD_TAG = True
 
     def open(self, markdown=False):
         if markdown:
@@ -39,7 +53,7 @@ class FormattedText(Text):
 
     def close(self, markdown=False):
         if markdown:
-            close_tag = self.MD_TAG
+            close_tag = self.MD_TAG if self.HAS_CLOSE_MD_TAG else ""
         else:
             close_tag = f"</{self.HTML_TAG}>"
         return close_tag
@@ -54,26 +68,32 @@ class ParagraphText(FormattedText):
 
 class BoldText(FormattedText):
     HTML_TAG = "b"
+    MD_TAG = "**"
 
 
 class ItalicText(FormattedText):
     HTML_TAG = "i"
+    MD_TAG = "*"
 
 
 class UnderlineText(FormattedText):
     HTML_TAG = "u"
+    MD_TAG = "__"
 
 
 class StrikethroughText(FormattedText):
     HTML_TAG = "s"
+    MD_TAG = "~~"
 
 
 class InlineCode(FormattedText):
     HTML_TAG = "code"
+    MD_TAG = "`"
 
 
 class CodeBlock(FormattedText):
     HTML_TAG = "code"
+    MD_TAG = "```"
 
     def eval(self, markdown=False):
         return f"<pre>{self.open(markdown)}{self.value.eval(markdown)}{self.close(markdown)}</pre>"
@@ -81,14 +101,19 @@ class CodeBlock(FormattedText):
 
 class InlineQuote(FormattedText):
     HTML_TAG = "q"
+    MD_TAG = "> "
+    HAS_CLOSE_MD_TAG = False
 
 
 class BlockQuote(FormattedText):
     HTML_TAG = "blockquote"
+    MD_TAG = ">>> "
+    HAS_CLOSE_MD_TAG = False
 
 
 class SpoilerText(FormattedText):
     HTML_TAG = "span"
+    MD_TAG = "||"
 
     def __init__(self, value, style="color: black; background: black;"):
         super().__init__(value, style=style)
