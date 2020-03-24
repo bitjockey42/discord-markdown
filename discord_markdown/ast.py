@@ -3,20 +3,19 @@ from .spec import TokenSpecification
 
 class Paragraph:
     HTML_TAG = "p"
-    MD_TAG = ""
 
     def __init__(self, elements):
         self.elements = elements
 
     def open(self, markdown=False):
         if markdown:
-            return self.MD_TAG
+            return ""
         else:
             return f"<{self.HTML_TAG}>"
 
     def close(self, markdown=False):
         if markdown:
-            return self.MD_TAG
+            return "\n"
         else:
             return f"</{self.HTML_TAG}>"
 

@@ -3,23 +3,29 @@ import pytest
 from discord_markdown.compiler import Compiler
 
 
-@pytest.mark.parametrize("markdown,expected", [
-    (False, "<p>Simple example</p>"),
-    (True, "Simple example"),
-])
+@pytest.mark.parametrize(
+    "markdown,expected", [(False, "<p>Simple example</p>"), (True, "Simple example"),]
+)
 def test_compile_simple(markdown, expected):
     text = "Simple example"
     compiler = Compiler(text)
     assert compiler.compile(markdown) == expected
 
 
-def test_compile_formatted():
+@pytest.mark.parametrize(
+    "markdown,expected",
+    [
+        (
+            False,
+            "<p>Here I <i>am</i> in the <b>light</b> of <b><i>day</i></b></p><p>Let the storm rage on</p>",
+        ),
+        (True, "Here I _am_ in the **light** of ***day***\nLet the storm rage on"),
+    ],
+)
+def test_compile_formatted(markdown, expected):
     text = "Here I _am_ in the **light** of ***day***\nLet the storm rage on"
     compiler = Compiler(text)
-    assert (
-        compiler.compile()
-        == "<p>Here I <i>am</i> in the <b>light</b> of <b><i>day</i></b></p><p>Let the storm rage on</p>"
-    )
+    assert compiler.compile(markdown) == expected
 
 
 def test_compile_code_block():
