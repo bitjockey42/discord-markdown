@@ -102,6 +102,13 @@ class CodeBlock(FormattedText):
     HTML_TAG = "code"
     MD_TAG = "```"
 
+    def close(self, markdown=False):
+        if markdown:
+            close_tag = self.MD_TAG
+        else:
+            close_tag = f"</{self.HTML_TAG}>"
+        return close_tag
+
     def eval(self, markdown=False):
         evaluated = f"{self.open(markdown)}{self.value.eval(markdown)}{self.close(markdown)}"
         if markdown:

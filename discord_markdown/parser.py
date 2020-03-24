@@ -64,7 +64,7 @@ class Parser:
                             )
                             elems.append(elem)
                         else:
-                            elem = AST_BY_TOKEN_TYPE[current_token.type](elem, md_tag=current_token.value)
+                            elem = AST_BY_TOKEN_TYPE[format_token.type](elem, md_tag=format_token.value)
                 elif (
                     is_quote
                     and quote_token.type == TokenSpecification.INLINE_QUOTE.name

@@ -29,8 +29,8 @@ def test_compile_code_block():
         compiler.compile(markdown=False)
         == "<p><pre><code>\n    echo test\n    </code></pre></p>"
     )
-    # TODO: Fix this
-    # assert compiler.compile(markdown=True) == text
+    # TODO: Can't yet turn it back to 
+    assert compiler.compile(markdown=True) == text
 
 
 def test_compile_block_quote():
