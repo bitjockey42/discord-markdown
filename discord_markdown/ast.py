@@ -29,7 +29,7 @@ class FormattedText(Text):
 
     def open(self, markdown=False):
         if markdown:
-            open_tag = self.HTML_TAG
+            open_tag = self.MD_TAG
         else:
             if self.style:
                 open_tag = f"<{self.HTML_TAG} style='{self.style}'>"
@@ -38,7 +38,11 @@ class FormattedText(Text):
         return open_tag
 
     def close(self, markdown=False):
-        return f"</{self.HTML_TAG}>" if self.HTML_TAG else ""
+        if markdown:
+            close_tag = self.MD_TAG
+        else:
+            close_tag = f"</{self.HTML_TAG}>"
+        return close_tag
 
     def eval(self, markdown=False):
         return f"{self.open(markdown)}{self.value.eval(markdown)}{self.close(markdown)}"
