@@ -23,6 +23,7 @@ class Parser:
         node = None
         current_token = next(self.token_iter)
         is_quote = False
+        end_quote = False
         quote_token = None
         create_paragraph = False
         elems = []
@@ -74,6 +75,7 @@ class Parser:
                     elem = AST_BY_TOKEN_TYPE[quote_token.type](elem)
                     self._stack.pop()
                     is_quote = False
+                    end_quote = True
                     quote_token = None
                 else:
                     text_node = text_node + current_token.value
@@ -89,6 +91,7 @@ class Parser:
             if (
                 current_token.type == TokenSpecification.NEWLINE.name
                 or current_token.type == EOF
+                or end_quote
             ):
                 print("ELEMS", "".join([e.eval() for e in elems]))
                 print("ELEMS", elems)
