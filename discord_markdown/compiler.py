@@ -27,9 +27,10 @@ class Compiler:
         return self._code
 
     def compile(self, markdown=False):
-        self._parser.parse()
-        code = ""
+        if not self._parser.tree:
+            self._parser.parse()
+        self._code = ""
         for node in self._parser.tree:
-            code = code + node.eval(markdown=markdown)
-        self._code = code.strip()
+            self._code = self._code + node.eval(markdown=markdown)
+        self._code = self._code.strip()
         return self._code

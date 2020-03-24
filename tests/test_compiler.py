@@ -3,13 +3,11 @@ import pytest
 from discord_markdown.compiler import Compiler
 
 
-@pytest.mark.parametrize(
-    "markdown,expected", [(False, "<p>Simple example</p>"), (True, "Simple example"),]
-)
-def test_compile_simple(markdown, expected):
+def test_compile_simple():
     text = "Simple example"
     compiler = Compiler(text)
-    assert compiler.compile(markdown) == expected
+    assert compiler.compile() == "<p>Simple example</p>"
+    assert compiler.compile(True) == text
 
 
 @pytest.mark.parametrize(
@@ -42,7 +40,7 @@ def test_compile_block_quote():
     text = ">>> This is a quote.\nThis should be part of it."
     compiler = Compiler(text)
     assert (
-        compiler.compile()
+        compiler.compile(markdown=False)
         == "<p><blockquote> This is a quote.\nThis should be part of it.</blockquote></p>"
     )
 
