@@ -27,9 +27,11 @@ class Paragraph:
 
 class Text:
     HTML_TAG = None
+    MD_TAG = None
 
-    def __init__(self, value, style=None):
+    def __init__(self, value, md_tag=None, style=None):
         self.value = value
+        self.md_tag = None
         self.style = style
 
     def eval(self, markdown=False):
@@ -41,9 +43,15 @@ class FormattedText(Text):
     MD_TAG = ""
     HAS_CLOSE_MD_TAG = True
 
+    def __init__(self, value, md_tag=None, style=None):
+        super().__init__(value, style=style)
+        if md_tag is None:
+            md_tag = self.MD_TAG
+        self.md_tag = md_tag
+
     def open(self, markdown=False):
         if markdown:
-            open_tag = self.MD_TAG
+            open_tag = self.md_tag
         else:
             if self.style:
                 open_tag = f"<{self.HTML_TAG} style='{self.style}'>"
@@ -53,7 +61,7 @@ class FormattedText(Text):
 
     def close(self, markdown=False):
         if markdown:
-            close_tag = self.MD_TAG if self.HAS_CLOSE_MD_TAG else ""
+            close_tag = self.md_tag if self.HAS_CLOSE_MD_TAG else ""
         else:
             close_tag = f"</{self.HTML_TAG}>"
         return close_tag
@@ -115,8 +123,8 @@ class SpoilerText(FormattedText):
     HTML_TAG = "span"
     MD_TAG = "||"
 
-    def __init__(self, value, style="color: black; background: black;"):
-        super().__init__(value, style=style)
+    def __init__(self, value, md_tag=None, style="color: black; background: black;"):
+        super().__init__(value, md_tag=md_tag, style=style)
 
 
 AST_BY_TOKEN_TYPE = {
