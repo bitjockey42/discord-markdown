@@ -28,7 +28,7 @@ class Parser:
         create_paragraph = False
         elems = []
 
-        print("TOKENS", self.tokens)
+        # print("TOKENS", self.tokens)
 
         while current_token != self.eof:
             text_node = ""
@@ -94,15 +94,14 @@ class Parser:
                 or current_token.type == EOF
                 or end_quote
             ):
-                print("ELEMS", "".join([e.eval() for e in elems]))
-                print("ELEMS", elems)
-                print("Did this work")
+                # print("ELEMS", "".join([e.eval() for e in elems]))
+                # print("ELEMS", elems)
                 node = Paragraph(elems)
                 self._tree.append(node)
                 elems = []
                 end_quote = False
 
-            print("TREE", self._tree)
+            # print("TREE", self._tree)
 
 
 class ParseError(Exception):
