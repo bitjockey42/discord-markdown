@@ -7,7 +7,7 @@ class Paragraph:
     def __init__(self, elements):
         self.elements = elements
 
-    def eval(self):
+    def eval(self, markdown=False):
         evaluated = "".join([elem.eval() for elem in self.elements])
         return f"<{self.HTML_TAG}>{evaluated}</{self.HTML_TAG}>"
 
@@ -19,27 +19,25 @@ class Text:
         self.value = value
         self.style = style
 
-    def eval(self):
+    def eval(self, markdown=False):
         return self.value
 
 
 class FormattedText(Text):
     HTML_TAG = ""
 
-    @property
-    def open(self):
+    def open(self, markdown=False):
         if self.style:
             open_tag = f"<{self.HTML_TAG} style='{self.style}'>"
         else:
             open_tag = f"<{self.HTML_TAG}>"
         return open_tag if self.HTML_TAG else ""
 
-    @property
-    def close(self):
+    def close(self, markdown=False):
         return f"</{self.HTML_TAG}>" if self.HTML_TAG else ""
 
-    def eval(self):
-        return f"{self.open}{self.value.eval()}{self.close}"
+    def eval(self, markdown=False):
+        return f"{self.open(markdown)}{self.value.eval(markdown)}{self.close(markdown)}"
 
 
 class ParagraphText(FormattedText):
@@ -69,8 +67,8 @@ class InlineCode(FormattedText):
 class CodeBlock(FormattedText):
     HTML_TAG = "code"
 
-    def eval(self):
-        return f"<pre>{self.open}{self.value.eval()}{self.close}</pre>"
+    def eval(self, markdown=False):
+        return f"<pre>{self.open(markdown)}{self.value.eval(markdown)}{self.close(markdown)}</pre>"
 
 
 class InlineQuote(FormattedText):
