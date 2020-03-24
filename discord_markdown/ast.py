@@ -25,13 +25,17 @@ class Text:
 
 class FormattedText(Text):
     HTML_TAG = ""
+    MD_TAG = ""
 
     def open(self, markdown=False):
-        if self.style:
-            open_tag = f"<{self.HTML_TAG} style='{self.style}'>"
+        if markdown:
+            open_tag = self.HTML_TAG
         else:
-            open_tag = f"<{self.HTML_TAG}>"
-        return open_tag if self.HTML_TAG else ""
+            if self.style:
+                open_tag = f"<{self.HTML_TAG} style='{self.style}'>"
+            else:
+                open_tag = f"<{self.HTML_TAG}>"
+        return open_tag
 
     def close(self, markdown=False):
         return f"</{self.HTML_TAG}>" if self.HTML_TAG else ""
