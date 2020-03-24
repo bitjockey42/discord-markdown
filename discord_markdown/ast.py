@@ -110,7 +110,9 @@ class CodeBlock(FormattedText):
         return close_tag
 
     def eval(self, markdown=False):
-        evaluated = f"{self.open(markdown)}{self.value.eval(markdown)}{self.close(markdown)}"
+        evaluated = (
+            f"{self.open(markdown)}{self.value.eval(markdown)}{self.close(markdown)}"
+        )
         if markdown:
             return evaluated
         else:
