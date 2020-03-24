@@ -1,6 +1,17 @@
 from .spec import TokenSpecification
 
 
+class Paragraph:
+    HTML_TAG = "p"
+
+    def __init__(self, elements):
+        self.elements = elements
+
+    def eval(self):
+        evaluated = "".join([elem.eval() for elem in self.elements])
+        return f"<{self.HTML_TAG}>{evaluated}</{self.HTML_TAG}>"
+
+
 class Text:
     HTML_TAG = None
 

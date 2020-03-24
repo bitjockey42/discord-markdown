@@ -16,21 +16,23 @@ def test_plain_text():
     tokens = tokenize(text)
     parser = Parser(tokens)
     parser.parse()
-    assert_tree(parser.tree, [ast.Text(text)])
+    assert_tree(parser.tree, [ast.Paragraph([ast.Text(text)])])
 
 
 def test_paragraph_text():
-    text = "This is the first paragraph.\nThis is the second one."
+    text = (
+        "This is the first paragraph.\nThis is the second one.\nThis is the third one."
+    )
     tokens = tokenize(text)
     parser = Parser(tokens)
     parser.parse()
     assert_tree(
         parser.tree,
         [
-            ast.Text("This is the first paragraph."),
-            ast.Text("\n"),
-            ast.Text("This is the second one."),
-        ]
+            ast.Paragraph([ast.Text("This is the first paragraph.")]),
+            ast.Paragraph([ast.Text("\n"), ast.Text("This is the second one.")]),
+            ast.Paragraph([ast.Text("\n"), ast.Text("This is the third one.")]),
+        ],
     )
 
 
@@ -40,7 +42,8 @@ def test_bold_text():
     parser = Parser(tokens)
     parser.parse()
     assert_tree(
-        parser.tree, [ast.Text("This is "), ast.BoldText(ast.Text("formatted")),]
+        parser.tree,
+        [ast.Paragraph([ast.Text("This is "), ast.BoldText(ast.Text("formatted"))])],
     )
 
 
@@ -49,17 +52,29 @@ def test_bold_alt_text():
     tokens = tokenize(text)
     parser = Parser(tokens)
     parser.parse()
-    assert_tree(parser.tree, [ast.BoldText(ast.Text("formatted")),])
+    assert_tree(parser.tree, [ast.Paragraph([ast.BoldText(ast.Text("formatted"))])])
 
 
 def test_bold_italics_text():
-    text = "This is ***formatted***"
+    text = "Here I _am_ in the **light** of ***day***\nLet the storm rage on"
     tokens = tokenize(text)
     parser = Parser(tokens)
     parser.parse()
     assert_tree(
         parser.tree,
-        [ast.Text("This is "), ast.BoldText(ast.ItalicText(ast.Text("formatted")))],
+        [
+            ast.Paragraph(
+                [
+                    ast.Text("Here I "),
+                    ast.ItalicText(ast.Text("am")),
+                    ast.Text(" in the "),
+                    ast.BoldText(ast.Text("light")),
+                    ast.Text(" of "),
+                    ast.BoldText(ast.ItalicText(ast.Text("day"))),
+                ]
+            ),
+            ast.Paragraph([ast.Text("\nLet the storm rage on")]),
+        ],
     )
 
 
@@ -69,7 +84,8 @@ def test_italic_text(text):
     parser = Parser(tokens)
     parser.parse()
     assert_tree(
-        parser.tree, [ast.Text("This is "), ast.ItalicText(ast.Text("formatted"))]
+        parser.tree,
+        [ast.Paragraph([ast.Text("This is "), ast.ItalicText(ast.Text("formatted"))]),],
     )
 
 
@@ -81,9 +97,13 @@ def test_underline_text():
     assert_tree(
         parser.tree,
         [
-            ast.Text("An "),
-            ast.UnderlineText(ast.Text("underlined")),
-            ast.Text(" example"),
+            ast.Paragraph(
+                [
+                    ast.Text("An "),
+                    ast.UnderlineText(ast.Text("underlined")),
+                    ast.Text(" example"),
+                ]
+            )
         ],
     )
 
@@ -96,9 +116,13 @@ def test_underline_italics_text():
     assert_tree(
         parser.tree,
         [
-            ast.Text("An "),
-            ast.UnderlineText(ast.ItalicText(ast.Text("underline italics"),)),
-            ast.Text(" example"),
+            ast.Paragraph(
+                [
+                    ast.Text("An "),
+                    ast.UnderlineText(ast.ItalicText(ast.Text("underline italics"))),
+                    ast.Text(" example"),
+                ]
+            )
         ],
     )
 
@@ -111,9 +135,13 @@ def test_underline_bold_text():
     assert_tree(
         parser.tree,
         [
-            ast.Text("An "),
-            ast.UnderlineText(ast.BoldText(ast.Text("underline bold"),)),
-            ast.Text(" example"),
+            ast.Paragraph(
+                [
+                    ast.Text("An "),
+                    ast.UnderlineText(ast.BoldText(ast.Text("underline bold"))),
+                    ast.Text(" example"),
+                ]
+            )
         ],
     )
 
@@ -126,13 +154,21 @@ def test_multiple_formatted_text():
     assert_tree(
         parser.tree,
         [
-            ast.Text("An "),
-            ast.UnderlineText(ast.ItalicText(ast.Text("underline italics"),)),
-            ast.Text(" example."),
-            ast.Text("\n"),
-            ast.Text("I "),
-            ast.BoldText(ast.Text("am")),
-            ast.Text(" depressed."),
+            ast.Paragraph(
+                [
+                    ast.Text("An "),
+                    ast.UnderlineText(ast.ItalicText(ast.Text("underline italics"))),
+                    ast.Text(" example."),
+                ]
+            ),
+            ast.Paragraph(
+                [
+                    ast.Text("\n"),
+                    ast.Text("I "),
+                    ast.BoldText(ast.Text("am")),
+                    ast.Text(" depressed."),
+                ]
+            ),
         ],
     )
 
@@ -145,9 +181,13 @@ def test_strikethrough_text():
     assert_tree(
         parser.tree,
         [
-            ast.Text("A "),
-            ast.StrikethroughText(ast.Text("strikethrough")),
-            ast.Text(" example"),
+            ast.Paragraph(
+                [
+                    ast.Text("A "),
+                    ast.StrikethroughText(ast.Text("strikethrough")),
+                    ast.Text(" example"),
+                ]
+            )
         ],
     )
 
@@ -160,9 +200,13 @@ def test_inline_code():
     assert_tree(
         parser.tree,
         [
-            ast.Text("Run this command "),
-            ast.InlineCode(ast.Text("echo hello")),
-            ast.Text("."),
+            ast.Paragraph(
+                [
+                    ast.Text("Run this command "),
+                    ast.InlineCode(ast.Text("echo hello")),
+                    ast.Text("."),
+                ]
+            )
         ],
     )
 
@@ -175,7 +219,12 @@ def test_code_block():
     parser = Parser(tokens)
     parser.parse()
     assert_tree(
-        parser.tree, [ast.CodeBlock(ast.Text("\n    echo test\n    "),), ast.Text(""),],
+        parser.tree,
+        [
+            ast.Paragraph(
+                [ast.CodeBlock(ast.Text("\n    echo test\n    ")), ast.Text("")]
+            )
+        ],
     )
 
 
@@ -187,8 +236,8 @@ def test_inline_quote():
     assert_tree(
         parser.tree,
         [
-            ast.InlineQuote(ast.Text(" This is a quote.")),
-            ast.Text("This isn't part of it."),
+            ast.Paragraph([ast.InlineQuote(ast.Text(" This is a quote."))]),
+            ast.Paragraph([ast.Text("This isn't part of it.")]),
         ],
     )
 
@@ -200,7 +249,15 @@ def test_block_quote():
     parser.parse()
     assert_tree(
         parser.tree,
-        [ast.BlockQuote(ast.Text(" This is a quote.\nThis should be part of it."))],
+        [
+            ast.Paragraph(
+                [
+                    ast.BlockQuote(
+                        ast.Text(" This is a quote.\nThis should be part of it.")
+                    )
+                ]
+            )
+        ],
     )
 
 
@@ -212,8 +269,12 @@ def test_spoiler_text():
     assert_tree(
         parser.tree,
         [
-            ast.Text("The FBI says "),
-            ast.SpoilerText(ast.Text("redacted here")),
-            ast.Text("."),
+            ast.Paragraph(
+                [
+                    ast.Text("The FBI says "),
+                    ast.SpoilerText(ast.Text("redacted here")),
+                    ast.Text("."),
+                ]
+            )
         ],
     )
