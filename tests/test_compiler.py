@@ -10,20 +10,14 @@ def test_compile_simple():
     assert compiler.compile(True) == text
 
 
-@pytest.mark.parametrize(
-    "markdown,expected",
-    [
-        (
-            False,
-            "<p>Here I <i>am</i> in the <b>light</b> of <b><i>day</i></b></p><p>Let the storm rage on</p>",
-        ),
-        (True, "Here I _am_ in the **light** of ***day***\nLet the storm rage on"),
-    ],
-)
-def test_compile_formatted(markdown, expected):
+def test_compile_formatted():
     text = "Here I _am_ in the **light** of ***day***\nLet the storm rage on"
     compiler = Compiler(text)
-    assert compiler.compile(markdown) == expected
+    assert (
+        compiler.compile(False)
+        == "<p>Here I <i>am</i> in the <b>light</b> of <b><i>day</i></b></p><p>Let the storm rage on</p>"
+    )
+    assert compiler.compile(True) == text
 
 
 def test_compile_code_block():
@@ -31,9 +25,12 @@ def test_compile_code_block():
     echo test
     ```"""
     compiler = Compiler(text)
-    assert compiler.compile(markdown=False) == "<p><pre><code>\n    echo test\n    </code></pre></p>"
+    assert (
+        compiler.compile(markdown=False)
+        == "<p><pre><code>\n    echo test\n    </code></pre></p>"
+    )
     # TODO: Fix this
-    # assert compiler.compile(markdown=True) == text 
+    # assert compiler.compile(markdown=True) == text
 
 
 def test_compile_block_quote():
