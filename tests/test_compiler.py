@@ -33,7 +33,8 @@ def test_compile_code_block():
     echo test
     ```"""
     compiler = Compiler(text)
-    assert compiler.compile() == "<p><pre><code>\n    echo test\n    </code></pre></p>"
+    assert compiler.compile(markdown=False) == "<p><pre><code>\n    echo test\n    </code></pre></p>"
+    assert compiler.compile(markdown=True) == text 
 
 
 def test_compile_block_quote():

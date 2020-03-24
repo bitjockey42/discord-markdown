@@ -103,7 +103,11 @@ class CodeBlock(FormattedText):
     MD_TAG = "```"
 
     def eval(self, markdown=False):
-        return f"<pre>{self.open(markdown)}{self.value.eval(markdown)}{self.close(markdown)}</pre>"
+        evaluated = f"{self.open(markdown)}{self.value.eval(markdown)}{self.close(markdown)}"
+        if markdown:
+            return evaluated
+        else:
+            return f"<pre>{evaluated}</pre>"
 
 
 class InlineQuote(FormattedText):
