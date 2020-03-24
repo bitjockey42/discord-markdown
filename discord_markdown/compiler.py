@@ -26,8 +26,8 @@ class Compiler:
     def code(self):
         return self._code
 
-    def compile(self):
+    def compile(self, markdown=False):
         self._parser.parse()
         for node in self._parser.tree:
-            self._code = self._code + node.eval()
+            self._code = self._code + node.eval(markdown=markdown)
         return self._code

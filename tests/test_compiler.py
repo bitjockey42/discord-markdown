@@ -3,10 +3,14 @@ import pytest
 from discord_markdown.compiler import Compiler
 
 
-def test_compile_simple():
+@pytest.mark.parametrize("markdown,expected", [
+    (False, "<p>Simple example</p>"),
+    (True, "Simple example"),
+])
+def test_compile_simple(markdown, expected):
     text = "Simple example"
     compiler = Compiler(text)
-    assert compiler.compile() == "<p>Simple example</p>"
+    assert compiler.compile(markdown) == expected
 
 
 def test_compile_formatted():
