@@ -81,7 +81,8 @@ class Parser:
                                 node, md_tag=format_token.value
                             )
 
-                        elems.append(node)
+                        if not format_tokens:
+                            elems.append(node)
                     else:
                         format_tokens.append(current_token)
                 elif current_token.type in TERMINAL_TOKEN_TYPES:

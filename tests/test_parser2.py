@@ -85,6 +85,25 @@ def test_underline_text():
     )
 
 
+def test_underline_italics_text():
+    text = "An __*underline italics*__ example"
+    tokens = tokenize(text)
+    parser = Parser(tokens)
+    parser.parse()
+    assert_tree(
+        parser.tree,
+        [
+            ast.Paragraph(
+                [
+                    ast.Text("An "),
+                    ast.UnderlineText(ast.ItalicText(ast.Text("underline italics"))),
+                    ast.Text(" example"),
+                ]
+            )
+        ],
+    )
+
+
 def test_strikethrough_text():
     text = "A ~~strikethrough~~ example"
     tokens = tokenize(text)
@@ -105,7 +124,7 @@ def test_strikethrough_text():
 
 
 def test_bold_italics_text():
-    text = "This is ***bold italics***"
+    text = "This is ***bold italics*** and *italic*"
     tokens = tokenize(text)
     parser = Parser(tokens)
     parser.parse()
@@ -116,6 +135,8 @@ def test_bold_italics_text():
                 [
                     ast.Text("This is "),
                     ast.BoldText(ast.ItalicText(ast.Text("bold italics"))),
+                    ast.Text(" and "),
+                    ast.ItalicText(ast.Text("italic")),
                 ]
             ),
         ],
