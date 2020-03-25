@@ -1,5 +1,11 @@
 from .ast import AST_BY_TOKEN_TYPE, Paragraph
-from .spec import TokenSpecification, NONFORMAT_TOKEN_TYPES, QUOTE_TOKEN_TYPES, EOF
+from .spec import (
+    TokenSpecification,
+    NONFORMAT_TOKEN_TYPES,
+    QUOTE_TOKEN_TYPES,
+    CODE_TOKEN_TYPES,
+    EOF,
+)
 
 
 class Parser:
@@ -18,17 +24,19 @@ class Parser:
         for node in self.tree:
             print(node.eval(), end="")
 
-    def parse(self):
+    def _parse(self):
         self.token_iter = iter(self.tokens)
         node = None
         current_token = next(self.token_iter)
         is_quote = False
         end_quote = False
         quote_token = None
+        code_token = None
         create_paragraph = False
+        is_code = False
         elems = []
 
-        # print("TOKENS", self.tokens)
+        print("TOKENS", self.tokens)
 
         while current_token != self.eof:
             text_node = ""
@@ -37,6 +45,10 @@ class Parser:
             if current_token.type in QUOTE_TOKEN_TYPES:
                 is_quote = True
                 quote_token = current_token
+
+            if current_token.type in CODE_TOKEN_TYPES:
+                is_code = True
+                code_token = current_token
 
             if current_token.type not in NONFORMAT_TOKEN_TYPES:
                 self._stack.append(current_token)
@@ -56,6 +68,7 @@ class Parser:
                         self._stack.append(current_token)
                     else:
                         format_token = self._stack.pop()
+
                         if current_token.type == TokenSpecification.BOLD_ITALIC.name:
                             print("BOLD ITALIC THING")
                             elem = AST_BY_TOKEN_TYPE[TokenSpecification.BOLD.name](
@@ -99,14 +112,16 @@ class Parser:
                 or current_token.type == EOF
                 or end_quote
             ):
-                # print("ELEMS", "".join([e.eval() for e in elems]))
-                # print("ELEMS", elems)
+                print("ELEMS", "".join([e.eval() for e in elems]))
                 node = Paragraph(elems)
                 self._tree.append(node)
                 elems = []
                 end_quote = False
 
             # print("TREE", self._tree)
+
+    def parse(self):
+        self._parse()
 
 
 class ParseError(Exception):
