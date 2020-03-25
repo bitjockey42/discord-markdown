@@ -126,7 +126,10 @@ def test_code_block():
     assert tokenize(text) == [
         Token("CODE_BLOCK", value="```markdown", line=1, column=0),
         Token(
-            "TEXT", value="\n    This is **meta** and should be ignored", line=2, column=11
+            "TEXT",
+            value="\n    This is **meta** and should be ignored",
+            line=2,
+            column=11,
         ),
         Token("CODE_BLOCK", value="```", line=2, column=42),
         Token("TEXT", value="", line=2, column=45),

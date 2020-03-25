@@ -33,13 +33,10 @@ def tokenize(code, skip_newline=False):
 
             current_token = next(token_iter, eof)
 
-        while (
-            current_token != eof
-            and (
-                current_token.type == "TEXT"
-                or current_token.type == "SPACE"
-                or code_token is not None
-            )
+        while current_token != eof and (
+            current_token.type == "TEXT"
+            or current_token.type == "SPACE"
+            or code_token is not None
         ):
             text_tokens.append(current_token)
             current_token = next(token_iter, eof)

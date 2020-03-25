@@ -92,24 +92,28 @@ class Parser:
                             elems.append(node)
                     else:
                         format_tokens.append(current_token)
-                elif (  
-                        is_quote
-                        and quote_token.type == TokenSpecification.INLINE_QUOTE.name
-                        and current_token.type == TokenSpecification.NEWLINE.name
-                    ) or (
-                        is_quote and quote_token.type == TokenSpecification.BLOCK_QUOTE.name
-                        and current_token.type == EOF
-                    ):
-                        format_tokens.pop()
-                        node = AST_BY_TOKEN_TYPE[quote_token.type](
-                            node, md_tag=quote_token.value
-                        )
-                        is_quote = False
-                        create_new_paragraph = True
-                        quote_token = None
-                        elems.append(node)
+                elif (
+                    is_quote
+                    and quote_token.type == TokenSpecification.INLINE_QUOTE.name
+                    and current_token.type == TokenSpecification.NEWLINE.name
+                ) or (
+                    is_quote
+                    and quote_token.type == TokenSpecification.BLOCK_QUOTE.name
+                    and current_token.type == EOF
+                ):
+                    format_tokens.pop()
+                    node = AST_BY_TOKEN_TYPE[quote_token.type](
+                        node, md_tag=quote_token.value
+                    )
+                    is_quote = False
+                    create_new_paragraph = True
+                    quote_token = None
+                    elems.append(node)
                 elif current_token.type in TERMINAL_TOKEN_TYPES:
-                    if current_token.type not in [TokenSpecification.CODE_BLOCK.name, TokenSpecification.BLOCK_QUOTE.name]:
+                    if current_token.type not in [
+                        TokenSpecification.CODE_BLOCK.name,
+                        TokenSpecification.BLOCK_QUOTE.name,
+                    ]:
                         create_new_paragraph = True
                 else:
                     text_value = current_token.value
