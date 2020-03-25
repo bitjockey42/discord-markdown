@@ -35,7 +35,6 @@ def tokenize(code, skip_newline=False):
 
         while (
             current_token != eof
-            and current_token.type != TokenSpecification.NEWLINE.name
             and (
                 current_token.type == "TEXT"
                 or current_token.type == "SPACE"

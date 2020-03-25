@@ -86,7 +86,8 @@ class Parser:
                     else:
                         format_tokens.append(current_token)
                 elif current_token.type in TERMINAL_TOKEN_TYPES:
-                    create_new_paragraph = True
+                    if current_token.type != TokenSpecification.CODE_BLOCK.name:
+                        create_new_paragraph = True
                 else:
                     text_value = current_token.value
                     node = AST_BY_TOKEN_TYPE[TokenSpecification.TEXT.name](text_value)
