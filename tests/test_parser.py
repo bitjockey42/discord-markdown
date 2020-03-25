@@ -217,7 +217,10 @@ def test_code_block():
         parser.tree,
         [
             ast.Paragraph(
-                [ast.CodeBlock(ast.Text("\n    This **is** _meta_\n    ")), ast.Text("")]
+                [
+                    ast.CodeBlock(ast.Text("\n    This **is** _meta_\n    ")),
+                    ast.Text(""),
+                ]
             )
         ],
     )

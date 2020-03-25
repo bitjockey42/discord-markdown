@@ -30,7 +30,7 @@ def tokenize(code, skip_newline=False):
                 code_token = current_token
                 code_tokens.append(current_token)
                 tokens.append(code_token)
-            
+
             current_token = next(token_iter, eof)
 
         while (
