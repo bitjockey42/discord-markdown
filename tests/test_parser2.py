@@ -45,3 +45,60 @@ def test_bold_text():
         parser.tree,
         [ast.Paragraph([ast.Text("This is "), ast.BoldText(ast.Text("formatted"))])],
     )
+
+
+def test_bold_alt_text():
+    text = "**formatted**"
+    tokens = tokenize(text)
+    parser = Parser(tokens)
+    parser.parse()
+    assert_tree(parser.tree, [ast.Paragraph([ast.BoldText(ast.Text("formatted"))])])
+
+
+@pytest.mark.parametrize("text", [("This is *formatted*"), ("This is _formatted_")])
+def test_italic_text(text):
+    tokens = tokenize(text)
+    parser = Parser(tokens)
+    parser.parse()
+    assert_tree(
+        parser.tree,
+        [ast.Paragraph([ast.Text("This is "), ast.ItalicText(ast.Text("formatted"))]),],
+    )
+
+
+def test_underline_text():
+    text = "An __underlined__ example"
+    tokens = tokenize(text)
+    parser = Parser(tokens)
+    parser.parse()
+    assert_tree(
+        parser.tree,
+        [
+            ast.Paragraph(
+                [
+                    ast.Text("An "),
+                    ast.UnderlineText(ast.Text("underlined")),
+                    ast.Text(" example"),
+                ]
+            )
+        ],
+    )
+
+
+def test_strikethrough_text():
+    text = "A ~~strikethrough~~ example"
+    tokens = tokenize(text)
+    parser = Parser(tokens)
+    parser.parse()
+    assert_tree(
+        parser.tree,
+        [
+            ast.Paragraph(
+                [
+                    ast.Text("A "),
+                    ast.StrikethroughText(ast.Text("strikethrough")),
+                    ast.Text(" example"),
+                ]
+            )
+        ],
+    )
