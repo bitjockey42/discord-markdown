@@ -1,3 +1,4 @@
+from . import ast
 from .ast import AST_BY_TOKEN_TYPE, Paragraph
 from .spec import (
     TokenSpecification,
@@ -72,7 +73,14 @@ class Parser:
                 if current_token.type in FORMAT_TOKEN_TYPES:
                     if current_token.type == format_tokens[-1].type:
                         format_token = format_tokens.pop()
-                        node = AST_BY_TOKEN_TYPE[format_token.type](node)
+
+                        if format_token.type == TokenSpecification.BOLD_ITALIC.name:
+                            node = ast.BoldText(ast.ItalicText(node))
+                        else:
+                            node = AST_BY_TOKEN_TYPE[format_token.type](
+                                node, md_tag=format_token.value
+                            )
+
                         elems.append(node)
                     else:
                         format_tokens.append(current_token)

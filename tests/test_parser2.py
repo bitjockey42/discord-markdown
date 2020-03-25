@@ -102,3 +102,21 @@ def test_strikethrough_text():
             )
         ],
     )
+
+
+def test_bold_italics_text():
+    text = "This is ***bold italics***"
+    tokens = tokenize(text)
+    parser = Parser(tokens)
+    parser.parse()
+    assert_tree(
+        parser.tree,
+        [
+            ast.Paragraph(
+                [
+                    ast.Text("This is "),
+                    ast.BoldText(ast.ItalicText(ast.Text("bold italics"))),
+                ]
+            ),
+        ],
+    )
