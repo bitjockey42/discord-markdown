@@ -37,6 +37,8 @@ class Parser:
         create_new_paragraph = False
         is_quote = False
         quote_token = None
+        is_code_block = False
+        code_token = None
         end_quote = False
         print(self.tokens)
 
@@ -64,6 +66,9 @@ class Parser:
             if current_token.type in QUOTE_TOKEN_TYPES:
                 is_quote = True
                 quote_token = current_token
+            elif current_token.type == TokenSpecification.CODE_BLOCK.name:
+                is_code_block = True
+                code_token = current_token
 
             if current_token.type in FORMAT_TOKEN_TYPES:
                 format_tokens.append(current_token)
@@ -77,7 +82,33 @@ class Parser:
             current_token = next(self.token_iter)
 
             while format_tokens and not create_new_paragraph:
-                if current_token.type in FORMAT_TOKEN_TYPES:
+                if (
+                    is_quote
+                    and quote_token.type == TokenSpecification.INLINE_QUOTE.name
+                    and current_token.type == TokenSpecification.NEWLINE.name
+                ) or (
+                    is_quote
+                    and quote_token.type == TokenSpecification.BLOCK_QUOTE.name
+                    and current_token.type == EOF
+                ):
+                    format_tokens.pop()
+                    node = AST_BY_TOKEN_TYPE[quote_token.type](
+                        node, md_tag=quote_token.value
+                    )
+                    is_quote = False
+                    create_new_paragraph = True
+                    quote_token = None
+                    elems.append(node)
+                elif (
+                    is_quote
+                    and quote_token.type == TokenSpecification.BLOCK_QUOTE.name
+                    and current_token.type in NONFORMAT_TOKEN_TYPES
+                ):
+                    text_value = current_token.value
+                    if node is not None:
+                        text_value = node.value + text_value
+                    node = AST_BY_TOKEN_TYPE[TokenSpecification.TEXT.name](text_value)
+                elif current_token.type in FORMAT_TOKEN_TYPES:
                     if current_token.type == format_tokens[-1].type:
                         format_token = format_tokens.pop()
 
@@ -92,30 +123,8 @@ class Parser:
                             elems.append(node)
                     else:
                         format_tokens.append(current_token)
-                elif is_quote and (
-                    (
-                        quote_token.type == TokenSpecification.INLINE_QUOTE.name
-                        and current_token.type == TokenSpecification.NEWLINE.name
-                    )
-                    or (
-                        quote_token.type == TokenSpecification.BLOCK_QUOTE.name
-                        and current_token.type == EOF
-                    )
-                ):
-                    format_tokens.pop()
-                    node = AST_BY_TOKEN_TYPE[quote_token.type](
-                        node, md_tag=quote_token.value
-                    )
-                    is_quote = False
-                    create_new_paragraph = True
-                    quote_token = None
-                    elems.append(node)
                 elif current_token.type in TERMINAL_TOKEN_TYPES:
-                    if current_token.type not in [
-                        TokenSpecification.CODE_BLOCK.name,
-                        TokenSpecification.BLOCK_QUOTE.name,
-                    ]:
-                        create_new_paragraph = True
+                    create_new_paragraph = True
                 else:
                     text_value = current_token.value
                     node = AST_BY_TOKEN_TYPE[TokenSpecification.TEXT.name](text_value)
