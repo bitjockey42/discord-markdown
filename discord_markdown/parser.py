@@ -130,6 +130,7 @@ class Parser:
         current_token = next(self.token_iter)
         node = None
         create_new_paragraph = False
+        print(self.tokens)
 
         while current_token != self.eof:
             # RULES:
@@ -183,7 +184,7 @@ class Parser:
                 if current_token != self.eof:
                     current_token = next(self.token_iter)
 
-            if create_new_paragraph or current_token == self.eof:
+            if create_new_paragraph or current_token.type in TERMINAL_TOKEN_TYPES:
                 self._tree.append(Paragraph(elems))
                 elems = []
                 create_new_paragraph = False

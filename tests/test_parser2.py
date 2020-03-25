@@ -18,3 +18,19 @@ def test_plain_text():
     parser.parse()
     assert_tree(parser.tree, [ast.Paragraph([ast.Text(text)])])
 
+
+def test_paragraph_text():
+    text = (
+        "This is the first paragraph.\nThis is the second one.\nThis is the third one."
+    )
+    tokens = tokenize(text)
+    parser = Parser(tokens)
+    parser.parse()
+    assert_tree(
+        parser.tree,
+        [
+            ast.Paragraph([ast.Text("This is the first paragraph.")]),
+            ast.Paragraph([ast.Text("This is the second one.")]),
+            ast.Paragraph([ast.Text("This is the third one.")]),
+        ],
+    )
