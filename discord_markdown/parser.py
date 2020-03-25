@@ -35,6 +35,9 @@ class Parser:
         current_token = next(self.token_iter)
         node = None
         create_new_paragraph = False
+        is_quote = False
+        quote_token = None
+        end_quote = False
         print(self.tokens)
 
         while current_token != self.eof:
@@ -57,6 +60,10 @@ class Parser:
             #   create_new_paragraph = False
             #
             format_token = None
+
+            if current_token.type in QUOTE_TOKEN_TYPES:
+                is_quote = True
+                quote_token = current_token
 
             if current_token.type in FORMAT_TOKEN_TYPES:
                 format_tokens.append(current_token)
@@ -85,8 +92,24 @@ class Parser:
                             elems.append(node)
                     else:
                         format_tokens.append(current_token)
+                elif (  
+                        is_quote
+                        and quote_token.type == TokenSpecification.INLINE_QUOTE.name
+                        and current_token.type == TokenSpecification.NEWLINE.name
+                    ) or (
+                        is_quote and quote_token.type == TokenSpecification.BLOCK_QUOTE.name
+                        and current_token.type == EOF
+                    ):
+                        format_tokens.pop()
+                        node = AST_BY_TOKEN_TYPE[quote_token.type](
+                            node, md_tag=quote_token.value
+                        )
+                        is_quote = False
+                        create_new_paragraph = True
+                        quote_token = None
+                        elems.append(node)
                 elif current_token.type in TERMINAL_TOKEN_TYPES:
-                    if current_token.type != TokenSpecification.CODE_BLOCK.name:
+                    if current_token.type not in [TokenSpecification.CODE_BLOCK.name, TokenSpecification.BLOCK_QUOTE.name]:
                         create_new_paragraph = True
                 else:
                     text_value = current_token.value
