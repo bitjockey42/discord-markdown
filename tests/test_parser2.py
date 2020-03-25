@@ -34,3 +34,14 @@ def test_paragraph_text():
             ast.Paragraph([ast.Text("This is the third one.")]),
         ],
     )
+
+
+def test_bold_text():
+    text = "This is **formatted**"
+    tokens = tokenize(text)
+    parser = Parser(tokens)
+    parser.parse()
+    assert_tree(
+        parser.tree,
+        [ast.Paragraph([ast.Text("This is "), ast.BoldText(ast.Text("formatted"))])],
+    )
