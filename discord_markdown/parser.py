@@ -92,14 +92,15 @@ class Parser:
                             elems.append(node)
                     else:
                         format_tokens.append(current_token)
-                elif (
-                    is_quote
-                    and quote_token.type == TokenSpecification.INLINE_QUOTE.name
-                    and current_token.type == TokenSpecification.NEWLINE.name
-                ) or (
-                    is_quote
-                    and quote_token.type == TokenSpecification.BLOCK_QUOTE.name
-                    and current_token.type == EOF
+                elif is_quote and (
+                    (
+                        quote_token.type == TokenSpecification.INLINE_QUOTE.name
+                        and current_token.type == TokenSpecification.NEWLINE.name
+                    )
+                    or (
+                        quote_token.type == TokenSpecification.BLOCK_QUOTE.name
+                        and current_token.type == EOF
+                    )
                 ):
                     format_tokens.pop()
                     node = AST_BY_TOKEN_TYPE[quote_token.type](
