@@ -111,11 +111,11 @@ def test_underline_bold_italics():
 
 
 def test_inline_code():
-    text = "`test`"
+    text = "`**test_`"
     assert tokenize(text) == [
         Token("INLINE_CODE", value="`", line=1, column=0),
-        Token("TEXT", value="test", line=1, column=1),
-        Token("INLINE_CODE", value="`", line=1, column=5),
+        Token("TEXT", value="**test_", line=1, column=1),
+        Token("INLINE_CODE", value="`", line=1, column=8),
         Token("EOF", value="", line=1, column=len(text)),
     ]
 
