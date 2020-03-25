@@ -26,7 +26,6 @@ class Parser:
         for node in self.tree:
             print(node.eval(), end="")
 
-
     def parse(self):
         self._tree = []
         elems = []
@@ -93,6 +92,7 @@ class Parser:
                 self._tree.append(Paragraph(elems))
                 elems = []
                 create_new_paragraph = False
+
 
 class ParseError(Exception):
     pass
