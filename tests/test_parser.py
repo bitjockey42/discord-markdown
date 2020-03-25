@@ -273,3 +273,41 @@ def test_spoiler_text():
             )
         ],
     )
+
+
+def test_annoying():
+    text = "[_Tiger looks at Kalahan contemplatively_]\nTiger: [_quietly_] ```asciidoc\n= Had only Bull not gotten to you first... =```\nTiger: ```asciidoc\n= You may do so. I simply wish her safe in her den. But I cannot and will not force you to do anything. And my power in the physical plane is greatly limited without one to call me mentor. =```"
+    tokens = tokenize(text)
+    parser = Parser(tokens)
+    parser.parse()
+    assert_tree(parser.tree, [
+        ast.Paragraph(
+            [
+                ast.Text("["),
+                ast.ItalicText(
+                    ast.Text("Tiger looks at Kalahan contemplatively"
+                )),
+                ast.Text("]")
+            ]
+        ),
+        ast.Paragraph(
+            [
+                ast.Text("Tiger: ["),
+                ast.ItalicText(ast.Text("quietly")),
+                ast.Text("]"),
+                ast.CodeBlock(
+                    ast.Text("= Had only Bull not gotten to you first... =")
+                )
+            ]
+        ),
+        ast.Paragraph(
+            [
+                ast.Text("Tiger: "),
+                ast.CodeBlock(
+                    ast.Text(
+                        "= You may do so. I simply wish her safe in her den. But I cannot and will not force you to do anything. And my power in the physical plane is greatly limited without one to call me mentor. ="
+                    )
+                ),
+            ]
+        )
+    ])
