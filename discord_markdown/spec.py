@@ -45,6 +45,11 @@ NONFORMAT_TOKEN_TYPES = [
     EOF,
 ]
 
+TERMINAL_TOKEN_TYPES = [
+    TokenSpecification.NEWLINE.name,
+    EOF,
+]
+
 
 QUOTE_TOKEN_TYPES = [
     TokenSpecification.INLINE_QUOTE.name,
