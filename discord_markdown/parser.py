@@ -36,6 +36,9 @@ class Parser:
         quote_token = None
         is_code_block = False
 
+        for token in self.tokens:
+            print(token)
+
         while current_token != self.eof:
             format_token = None
             node = None
@@ -57,7 +60,7 @@ class Parser:
 
             current_token = next(self.token_iter)
 
-            while format_tokens and not create_new_paragraph:
+            while format_tokens:
                 if (
                     is_quote
                     and quote_token.type == TokenSpecification.INLINE_QUOTE.name
@@ -102,15 +105,10 @@ class Parser:
                             is_code_block = False
                     else:
                         format_tokens.append(current_token)
-                elif not is_code_block and current_token.type in TERMINAL_TOKEN_TYPES:
-                    create_new_paragraph = True
-                elif is_code_block:
+                else:
                     text_value = current_token.value
                     if node is not None:
                         text_value = node.value + text_value
-                    node = AST_BY_TOKEN_TYPE[TokenSpecification.TEXT.name](text_value)
-                else:
-                    text_value = current_token.value
                     node = AST_BY_TOKEN_TYPE[TokenSpecification.TEXT.name](text_value)
 
                 if current_token != self.eof:

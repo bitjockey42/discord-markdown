@@ -317,6 +317,28 @@ def test_spoiler_text(markdown):
 
 
 @pytest.mark.parametrize("markdown", [False, True])
+def test_multiline_formatted_text(markdown):
+    text = "_This\nshould be parsed as\none line_."
+    tokens = tokenize(text)
+    parser = Parser(tokens)
+    parser.parse()
+    assert_tree(
+        parser.tree,
+        [
+            ast.Paragraph(
+                [
+                    ast.ItalicText(
+                        ast.Text("This\nshould be parsed as\none line"), md_tag="_"
+                    ),
+                    ast.Text("."),
+                ]
+            )
+        ],
+        markdown=markdown,
+    )
+
+
+@pytest.mark.parametrize("markdown", [False, True])
 def test_complex_markup(markdown):
     text = load_file("discord.md")
     tokens = tokenize(text)
