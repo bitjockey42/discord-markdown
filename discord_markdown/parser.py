@@ -4,7 +4,6 @@ from .spec import (
     TokenSpecification,
     FORMAT_TOKEN_TYPES,
     TERMINAL_TOKEN_TYPES,
-    NONFORMAT_TOKEN_TYPES,
     QUOTE_TOKEN_TYPES,
     EOF,
 )
@@ -78,15 +77,6 @@ class Parser:
                     create_new_paragraph = True
                     quote_token = None
                     elems.append(node)
-                elif (
-                    is_quote
-                    and quote_token.type == TokenSpecification.BLOCK_QUOTE.name
-                    and current_token.type in NONFORMAT_TOKEN_TYPES
-                ):
-                    text_value = current_token.value
-                    if node is not None:
-                        text_value = node.value + text_value
-                    node = AST_BY_TOKEN_TYPE[TokenSpecification.TEXT.name](text_value)
                 elif current_token.type in FORMAT_TOKEN_TYPES:
                     if current_token.type == format_tokens[-1].type:
                         format_token = format_tokens.pop()
