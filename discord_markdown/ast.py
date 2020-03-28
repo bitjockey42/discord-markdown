@@ -46,7 +46,7 @@ class Text:
     HTML_TAG = None
     MD_TAG = None
 
-    def __init__(self, value, md_tag=None, style=None):
+    def __init__(self, value=None, md_tag=None, style=None):
         self.value = value
         self.md_tag = None
         self.style = style

@@ -17,7 +17,7 @@ class Parser:
         self.tokens = tokens
         self.token_iter = iter(self.tokens)
         self.eof = self.tokens[-1]
-        self._stack = []
+        self._format_tokens = []
         self._tree = []
 
     @property
@@ -30,24 +30,42 @@ class Parser:
 
     def parse(self):
         self._tree = []
-        self._stack = []
+        self._format_tokens = []
         self.token_iter = iter(self.tokens)
 
+        text_node = None
         current_token = next(self.token_iter, STOP_ITERATION)
         paragraph = None
 
         while current_token != STOP_ITERATION:
             if current_token.type in TERMINAL_TOKEN_TYPES:
-                print("END", [e.eval() for e in paragraph.elements])
                 self._tree.append(paragraph)
                 paragraph = None
             else:
-                if paragraph is None:
+                if not paragraph:
                     paragraph = ast.Paragraph()
-                paragraph.elements.append(ast.Text(current_token.value))
-                print("TEXT", [e.eval() for e in paragraph.elements])
+                text_node = ast.Text(current_token.value)
+                paragraph.elements.append(text_node)
 
             current_token = next(self.token_iter, STOP_ITERATION)
+
+
+    def _handle_formatted_text(self, current_token, paragraph, text_elem):
+        if current_token.type in FORMAT_TOKEN_TYPES:
+            if current_token.type == self._format_tokens[-1].type:
+                format_token = self._format_tokens.pop()
+
+                if format_token.type == TokenSpecification.BOLD_ITALIC.name:
+                    elem = ast.BoldText(ast.ItalicText(text_elem))
+                else:
+                    elem = AST_BY_TOKEN_TYPE[format_token.type](
+                        text_elem, md_tag=format_token.value
+                    )
+
+                if not self._format_tokens:
+                    paragraph.elements.append(elem)
+            else:
+                self._format_tokens.append(current_token)
 
 
 class ParseError(Exception):
