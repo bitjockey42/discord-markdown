@@ -122,13 +122,13 @@ class CodeBlock(FormattedText):
 
 class InlineQuote(FormattedText):
     HTML_TAG = "q"
-    MD_TAG = "> "
+    MD_TAG = ">"
     HAS_CLOSE_MD_TAG = False
 
 
 class BlockQuote(FormattedText):
     HTML_TAG = "blockquote"
-    MD_TAG = ">>> "
+    MD_TAG = ">>>"
     HAS_CLOSE_MD_TAG = False
 
 

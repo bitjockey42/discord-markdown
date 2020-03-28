@@ -14,15 +14,18 @@ def assert_tree(parser_tree, expected, markdown=False):
     ]
 
 
-def test_plain_text():
+@pytest.mark.parametrize("markdown", [False, True])
+def test_plain_text(markdown):
     text = "Simple example"
     tokens = tokenize(text)
     parser = Parser(tokens)
     parser.parse()
-    assert_tree(parser.tree, [ast.Paragraph([ast.Text(text)])])
+    expected = [ast.Paragraph([ast.Text(text)])]
+    assert_tree(parser.tree, expected, markdown)
 
 
-def test_paragraph_text():
+@pytest.mark.parametrize("markdown", [False, True])
+def test_paragraph_text(markdown):
     text = (
         "This is the first paragraph.\nThis is the second one.\nThis is the third one."
     )
@@ -36,10 +39,12 @@ def test_paragraph_text():
             ast.Paragraph([ast.Text("This is the second one.")]),
             ast.Paragraph([ast.Text("This is the third one.")]),
         ],
+        markdown=markdown,
     )
 
 
-def test_bold_text():
+@pytest.mark.parametrize("markdown", [False, True])
+def test_bold_text(markdown):
     text = "This is **formatted**"
     tokens = tokenize(text)
     parser = Parser(tokens)
@@ -47,18 +52,25 @@ def test_bold_text():
     assert_tree(
         parser.tree,
         [ast.Paragraph([ast.Text("This is "), ast.BoldText(ast.Text("formatted"))])],
+        markdown=markdown,
     )
 
 
-def test_bold_alt_text():
+@pytest.mark.parametrize("markdown", [False, True])
+def test_bold_alt_text(markdown):
     text = "**formatted**"
     tokens = tokenize(text)
     parser = Parser(tokens)
     parser.parse()
-    assert_tree(parser.tree, [ast.Paragraph([ast.BoldText(ast.Text("formatted"))])])
+    assert_tree(
+        parser.tree,
+        [ast.Paragraph([ast.BoldText(ast.Text("formatted"))])],
+        markdown=markdown,
+    )
 
 
-def test_bold_italics_text():
+@pytest.mark.parametrize("markdown", [False, True])
+def test_bold_italics_text(markdown):
     text = "Here I _am_ in the **light** of ***day***\nLet the storm rage on"
     tokens = tokenize(text)
     parser = Parser(tokens)
@@ -69,7 +81,7 @@ def test_bold_italics_text():
             ast.Paragraph(
                 [
                     ast.Text("Here I "),
-                    ast.ItalicText(ast.Text("am")),
+                    ast.ItalicText(ast.Text("am"), md_tag="_"),
                     ast.Text(" in the "),
                     ast.BoldText(ast.Text("light")),
                     ast.Text(" of "),
@@ -78,6 +90,7 @@ def test_bold_italics_text():
             ),
             ast.Paragraph([ast.Text("Let the storm rage on")]),
         ],
+        markdown=markdown,
     )
 
 
@@ -92,7 +105,8 @@ def test_italic_text(text):
     )
 
 
-def test_underline_text():
+@pytest.mark.parametrize("markdown", [False, True])
+def test_underline_text(markdown):
     text = "An __underlined__ example"
     tokens = tokenize(text)
     parser = Parser(tokens)
@@ -108,10 +122,12 @@ def test_underline_text():
                 ]
             )
         ],
+        markdown=markdown,
     )
 
 
-def test_underline_italics_text():
+@pytest.mark.parametrize("markdown", [False, True])
+def test_underline_italics_text(markdown):
     text = "An __*underline italics*__ example"
     tokens = tokenize(text)
     parser = Parser(tokens)
@@ -127,10 +143,12 @@ def test_underline_italics_text():
                 ]
             )
         ],
+        markdown=markdown,
     )
 
 
-def test_underline_bold_text():
+@pytest.mark.parametrize("markdown", [False, True])
+def test_underline_bold_text(markdown):
     text = "An __**underline bold**__ example"
     tokens = tokenize(text)
     parser = Parser(tokens)
@@ -146,10 +164,12 @@ def test_underline_bold_text():
                 ]
             )
         ],
+        markdown=markdown,
     )
 
 
-def test_multiple_formatted_text():
+@pytest.mark.parametrize("markdown", [False, True])
+def test_multiple_formatted_text(markdown):
     text = "An __*underline italics*__ example.\nI **am** depressed."
     tokens = tokenize(text)
     parser = Parser(tokens)
@@ -168,10 +188,12 @@ def test_multiple_formatted_text():
                 [ast.Text("I "), ast.BoldText(ast.Text("am")), ast.Text(" depressed.")]
             ),
         ],
+        markdown=markdown,
     )
 
 
-def test_strikethrough_text():
+@pytest.mark.parametrize("markdown", [False, True])
+def test_strikethrough_text(markdown):
     text = "A ~~strikethrough~~ example"
     tokens = tokenize(text)
     parser = Parser(tokens)
@@ -187,10 +209,12 @@ def test_strikethrough_text():
                 ]
             )
         ],
+        markdown=markdown,
     )
 
 
-def test_inline_code():
+@pytest.mark.parametrize("markdown", [False, True])
+def test_inline_code(markdown):
     text = "Run this command `echo hello`."
     tokens = tokenize(text)
     parser = Parser(tokens)
@@ -206,10 +230,12 @@ def test_inline_code():
                 ]
             )
         ],
+        markdown=markdown,
     )
 
 
-def test_code_block():
+@pytest.mark.parametrize("markdown", [False, True])
+def test_code_block(markdown):
     text = """```markdown
     This **is** _meta_
     ```"""
@@ -221,15 +247,19 @@ def test_code_block():
         [
             ast.Paragraph(
                 [
-                    ast.CodeBlock(ast.Text("\n    This **is** _meta_\n    ")),
+                    ast.CodeBlock(
+                        ast.Text("\n    This **is** _meta_\n    "), md_tag="```markdown"
+                    ),
                     ast.Text(""),
                 ]
             )
         ],
+        markdown=markdown,
     )
 
 
-def test_inline_quote():
+@pytest.mark.parametrize("markdown", [False, True])
+def test_inline_quote(markdown):
     text = "> This is a quote.\nThis isn't part of it."
     tokens = tokenize(text)
     parser = Parser(tokens)
@@ -240,10 +270,12 @@ def test_inline_quote():
             ast.Paragraph([ast.InlineQuote(ast.Text(" This is a quote."))]),
             ast.Paragraph([ast.Text("This isn't part of it.")]),
         ],
+        markdown=markdown,
     )
 
 
-def test_block_quote():
+@pytest.mark.parametrize("markdown", [False, True])
+def test_block_quote(markdown):
     text = ">>> This is a quote.\nThis should be part of it."
     tokens = tokenize(text)
     parser = Parser(tokens)
@@ -259,10 +291,12 @@ def test_block_quote():
                 ]
             )
         ],
+        markdown=markdown,
     )
 
 
-def test_spoiler_text():
+@pytest.mark.parametrize("markdown", [False, True])
+def test_spoiler_text(markdown):
     text = "The FBI says ||redacted here||."
     tokens = tokenize(text)
     parser = Parser(tokens)
@@ -278,10 +312,12 @@ def test_spoiler_text():
                 ]
             )
         ],
+        markdown=markdown,
     )
 
 
-def test_complex_markup():
+@pytest.mark.parametrize("markdown", [False, True])
+def test_complex_markup(markdown):
     text = load_file("discord.md")
     tokens = tokenize(text)
     parser = Parser(tokens)
@@ -321,5 +357,5 @@ def test_complex_markup():
                 ]
             ),
         ],
-        markdown=True,
+        markdown=markdown,
     )
