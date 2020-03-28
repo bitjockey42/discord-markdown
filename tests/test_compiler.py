@@ -1,5 +1,7 @@
 from discord_markdown.compiler import Compiler
 
+from tests.fixtures import load_file
+
 
 def test_compile_simple():
     text = "Simple example"
@@ -48,3 +50,11 @@ def test_compile_inline_quote():
         == "<p><q> This is a quote.</q></p><p>And this should not be part of it</p>"
     )
     assert compiler.compile(True) == text
+
+
+def test_complex_markup():
+    text = load_file("discord.md")
+    html = load_file("discord.html")
+    compiler = Compiler(text)
+    assert compiler.compile() == html
+    assert compiler.compile(markdown=True) == text
