@@ -33,10 +33,6 @@ class Parser:
         create_new_paragraph = False
         is_quote = False
         quote_token = None
-        is_code_block = False
-
-        for token in self.tokens:
-            print(token)
 
         while current_token != self.eof:
             format_token = None
@@ -45,8 +41,6 @@ class Parser:
             if current_token.type in QUOTE_TOKEN_TYPES:
                 is_quote = True
                 quote_token = current_token
-            elif current_token.type == TokenSpecification.CODE_BLOCK.name:
-                is_code_block = True
 
             if current_token.type in FORMAT_TOKEN_TYPES:
                 format_tokens.append(current_token)
@@ -90,9 +84,6 @@ class Parser:
 
                         if not format_tokens:
                             elems.append(node)
-
-                        if is_code_block:
-                            is_code_block = False
                     else:
                         format_tokens.append(current_token)
                 else:
