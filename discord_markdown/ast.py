@@ -59,16 +59,14 @@ class Text:
         return self.value
 
 
-class FormattedText(Text):
+class FormattedText(NestedElement):
     HTML_TAG = ""
     MD_TAG = ""
     HAS_CLOSE_MD_TAG = True
 
-    def __init__(self, value, md_tag=None, style=None):
-        super().__init__(value, style=style)
-        if md_tag is None:
-            md_tag = self.MD_TAG
-        self.md_tag = md_tag
+    def __init__(self, elements=None, md_tag=None, style=None):
+        super().__init__(elements=elements, md_tag=md_tag)
+        self.style = style
 
     def open(self, markdown=False):
         if markdown:
@@ -87,29 +85,23 @@ class FormattedText(Text):
             close_tag = f"</{self.HTML_TAG}>"
         return close_tag
 
-    def eval(self, markdown=False):
-        return f"{self.open(markdown)}{self.value.eval(markdown)}{self.close(markdown)}"
 
-
-class CodeBlock(FormattedText):
+class CodeBlock(NestedElement):
     HTML_TAG = "code"
     MD_TAG = "```"
+
+    def open(self, markdown=False):
+        if markdown:
+            open_tag = self.md_tag
+        else:
+            close_tag = f"<pre><{self.HTML_TAG}>"
 
     def close(self, markdown=False):
         if markdown:
             close_tag = self.MD_TAG
         else:
-            close_tag = f"</{self.HTML_TAG}>"
+            close_tag = f"</{self.HTML_TAG}></pre>"
         return close_tag
-
-    def eval(self, markdown=False):
-        evaluated = (
-            f"{self.open(markdown)}{self.value.eval(markdown)}{self.close(markdown)}"
-        )
-        if markdown:
-            return evaluated
-        else:
-            return f"<pre>{evaluated}</pre>"
 
 
 class BoldText(FormattedText):

@@ -43,7 +43,7 @@ def test_paragraph_text(markdown):
     )
 
 
-@pytest.mark.skip("f")
+@pytest.mark.skip("FIX")
 @pytest.mark.parametrize("markdown", [False, True])
 def test_bold_text(markdown):
     text = "This is **formatted**"
