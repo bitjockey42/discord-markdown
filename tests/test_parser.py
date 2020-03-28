@@ -4,10 +4,13 @@ from discord_markdown.lexer import tokenize
 from discord_markdown.parser import Parser
 from discord_markdown import ast
 
+from tests.fixtures import load_file
 
-def assert_tree(parser_tree, expected):
-    assert [(node.eval(), node.HTML_TAG) for node in parser_tree] == [
-        (e.eval(), e.HTML_TAG) for e in expected
+
+def assert_tree(parser_tree, expected, markdown=False):
+    assert len(parser_tree) == len(expected)
+    assert [(node.eval(markdown), node.HTML_TAG) for node in parser_tree] == [
+        (e.eval(markdown), e.HTML_TAG) for e in expected
     ]
 
 
@@ -85,7 +88,7 @@ def test_italic_text(text):
     parser.parse()
     assert_tree(
         parser.tree,
-        [ast.Paragraph([ast.Text("This is "), ast.ItalicText(ast.Text("formatted"))]),],
+        [ast.Paragraph([ast.Text("This is "), ast.ItalicText(ast.Text("formatted"))])],
     )
 
 
@@ -162,7 +165,7 @@ def test_multiple_formatted_text():
                 ]
             ),
             ast.Paragraph(
-                [ast.Text("I "), ast.BoldText(ast.Text("am")), ast.Text(" depressed."),]
+                [ast.Text("I "), ast.BoldText(ast.Text("am")), ast.Text(" depressed.")]
             ),
         ],
     )
@@ -207,8 +210,8 @@ def test_inline_code():
 
 
 def test_code_block():
-    text = """```sh
-    echo test
+    text = """```markdown
+    This **is** _meta_
     ```"""
     tokens = tokenize(text)
     parser = Parser(tokens)
@@ -217,7 +220,10 @@ def test_code_block():
         parser.tree,
         [
             ast.Paragraph(
-                [ast.CodeBlock(ast.Text("\n    echo test\n    ")), ast.Text("")]
+                [
+                    ast.CodeBlock(ast.Text("\n    This **is** _meta_\n    ")),
+                    ast.Text(""),
+                ]
             )
         ],
     )
@@ -272,4 +278,48 @@ def test_spoiler_text():
                 ]
             )
         ],
+    )
+
+
+def test_complex_markup():
+    text = load_file("discord.md")
+    tokens = tokenize(text)
+    parser = Parser(tokens)
+    parser.parse()
+    assert_tree(
+        parser.tree,
+        [
+            ast.Paragraph(
+                [
+                    ast.Text("["),
+                    ast.ItalicText(
+                        ast.Text("Tiger looks at Kalahan contemplatively"), md_tag="_"
+                    ),
+                    ast.Text("]"),
+                ]
+            ),
+            ast.Paragraph(
+                [
+                    ast.Text("Tiger: ["),
+                    ast.ItalicText(ast.Text("quietly"), md_tag="_"),
+                    ast.Text("] "),
+                    ast.CodeBlock(
+                        ast.Text("= Had only Bull not gotten to you first... ="),
+                        md_tag="```asciidoc",
+                    ),
+                ]
+            ),
+            ast.Paragraph(
+                [
+                    ast.Text("Tiger: "),
+                    ast.CodeBlock(
+                        ast.Text(
+                            "= You may do so. I simply wish her safe in her den. But I cannot and will not force you to do anything. And my power in the physical plane is greatly limited without one to call me mentor. =" # noqa
+                        ),
+                        md_tag="```asciidoc",
+                    ),
+                ]
+            ),
+        ],
+        markdown=True,
     )

@@ -1,6 +1,6 @@
 import re
 
-from .spec import TokenSpecification, Token, EOF
+from .spec import TokenSpecification, Token, CODE_TOKEN_TYPES, EOF
 
 
 def tokenize(code, skip_newline=False):
@@ -9,7 +9,9 @@ def tokenize(code, skip_newline=False):
 
     token_iter = tokenize_generator(code, skip_newline)
     current_token = next(token_iter, eof)
+    code_token = None
     tokens = []
+    code_tokens = []
     text_tokens = []
 
     while current_token != eof:
@@ -20,9 +22,26 @@ def tokenize(code, skip_newline=False):
         ):
             break
 
-        while current_token.type == "TEXT" or current_token.type == "SPACE":
+        if current_token.type in CODE_TOKEN_TYPES:
+            if code_tokens and current_token.type == code_tokens[-1].type:
+                code_tokens.pop()
+                code_token = None
+            else:
+                code_token = current_token
+                code_tokens.append(current_token)
+                tokens.append(code_token)
+
+            current_token = next(token_iter, eof)
+
+        while current_token != eof and (
+            current_token.type == "TEXT"
+            or current_token.type == "SPACE"
+            or code_token is not None
+        ):
             text_tokens.append(current_token)
             current_token = next(token_iter, eof)
+            if code_token is not None and current_token.type == code_token.type:
+                code_token = None
 
         if text_tokens:
             concat_text = [t.value for t in text_tokens]

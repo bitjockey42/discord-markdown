@@ -24,6 +24,20 @@ class TokenSpecification(enum.Enum):
     TEXT = ("TEXT", r"[\S\s]?", "")
 
 
+FORMAT_TOKEN_TYPES = [
+    TokenSpecification.CODE_BLOCK.name,
+    TokenSpecification.BLOCK_QUOTE.name,
+    TokenSpecification.INLINE_CODE.name,
+    TokenSpecification.INLINE_QUOTE.name,
+    TokenSpecification.BOLD.name,
+    TokenSpecification.BOLD_ITALIC.name,
+    TokenSpecification.SPOILER.name,
+    TokenSpecification.UNDERLINE.name,
+    TokenSpecification.ITALIC.name,
+    TokenSpecification.STRIKETHROUGH.name,
+]
+
+
 NONFORMAT_TOKEN_TYPES = [
     TokenSpecification.TEXT.name,
     TokenSpecification.SPACE.name,
@@ -32,7 +46,19 @@ NONFORMAT_TOKEN_TYPES = [
 ]
 
 
+TERMINAL_TOKEN_TYPES = [
+    TokenSpecification.NEWLINE.name,
+    EOF,
+]
+
+
 QUOTE_TOKEN_TYPES = [
     TokenSpecification.INLINE_QUOTE.name,
     TokenSpecification.BLOCK_QUOTE.name,
+]
+
+
+CODE_TOKEN_TYPES = [
+    TokenSpecification.CODE_BLOCK.name,
+    TokenSpecification.INLINE_CODE.name,
 ]
