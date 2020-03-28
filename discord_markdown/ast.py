@@ -1,8 +1,9 @@
 from .spec import TokenSpecification
 
 
-class Paragraph:
-    HTML_TAG = "p"
+class NestedElement:
+    HTML_TAG = ""
+    MD_TAG = ""
 
     def __init__(self, elements):
         self.elements = elements
@@ -24,6 +25,11 @@ class Paragraph:
         return f"{self.open(markdown)}{evaluated}{self.close(markdown)}"
 
 
+class Paragraph(NestedElement):
+    HTML_TAG = "p"
+    MD_TAG = "\n"
+
+
 class Text:
     HTML_TAG = None
     MD_TAG = None
@@ -32,6 +38,10 @@ class Text:
         self.value = value
         self.md_tag = None
         self.style = style
+
+    def __add__(self, other):
+        new_value = self.value + other.value
+        return Text(new_value, self.md_tag, self.style)
 
     def eval(self, markdown=False):
         return self.value
@@ -67,11 +77,6 @@ class FormattedText(Text):
 
     def eval(self, markdown=False):
         return f"{self.open(markdown)}{self.value.eval(markdown)}{self.close(markdown)}"
-
-
-class ParagraphText(FormattedText):
-    HTML_TAG = "p"
-    MD_TAG = "\n"
 
 
 class BoldText(FormattedText):
