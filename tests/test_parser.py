@@ -304,7 +304,7 @@ def test_complex_markup():
                     ast.ItalicText(ast.Text("quietly"), md_tag="_"),
                     ast.Text("] "),
                     ast.CodeBlock(
-                        ast.Text("= Had only Bull not gotten to you first... ="),
+                        ast.Text("\n= Had only Bull not gotten to you first... ="),
                         md_tag="```asciidoc",
                     ),
                 ]
@@ -314,7 +314,7 @@ def test_complex_markup():
                     ast.Text("Tiger: "),
                     ast.CodeBlock(
                         ast.Text(
-                            "= You may do so. I simply wish her safe in her den. But I cannot and will not force you to do anything. And my power in the physical plane is greatly limited without one to call me mentor. =" # noqa
+                            "\n= You may do so. I simply wish her safe in her den. But I cannot and will not force you to do anything. And my power in the physical plane is greatly limited without one to call me mentor. ="  # noqa
                         ),
                         md_tag="```asciidoc",
                     ),

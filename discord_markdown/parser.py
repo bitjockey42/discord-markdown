@@ -13,7 +13,7 @@ from .spec import (
 class Parser:
     def __init__(self, tokens):
         self.tokens = tokens
-        self.token_iter = iter(tokens)
+        self.token_iter = iter(self.tokens)
         self.eof = self.tokens[-1]
         self._stack = []
         self._tree = []
@@ -31,7 +31,6 @@ class Parser:
         elems = []
         format_tokens = []
         current_token = next(self.token_iter)
-        node = None
         create_new_paragraph = False
         is_quote = False
         quote_token = None
@@ -39,6 +38,7 @@ class Parser:
 
         while current_token != self.eof:
             format_token = None
+            node = None
 
             if current_token.type in QUOTE_TOKEN_TYPES:
                 is_quote = True
@@ -104,6 +104,11 @@ class Parser:
                         format_tokens.append(current_token)
                 elif not is_code_block and current_token.type in TERMINAL_TOKEN_TYPES:
                     create_new_paragraph = True
+                elif is_code_block:
+                    text_value = current_token.value
+                    if node is not None:
+                        text_value = node.value + text_value
+                    node = AST_BY_TOKEN_TYPE[TokenSpecification.TEXT.name](text_value)
                 else:
                     text_value = current_token.value
                     node = AST_BY_TOKEN_TYPE[TokenSpecification.TEXT.name](text_value)

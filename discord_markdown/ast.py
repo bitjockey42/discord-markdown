@@ -71,6 +71,7 @@ class FormattedText(Text):
 
 class ParagraphText(FormattedText):
     HTML_TAG = "p"
+    MD_TAG = "\n"
 
 
 class BoldText(FormattedText):
