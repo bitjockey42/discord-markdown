@@ -23,17 +23,18 @@ def test_annoying():
             ast.Paragraph(
                 [
                     ast.Text("["),
-                    ast.ItalicText(ast.Text("Tiger looks at Kalahan contemplatively")),
+                    ast.ItalicText(ast.Text("Tiger looks at Kalahan contemplatively"), md_tag="_"),
                     ast.Text("]"),
                 ]
             ),
             ast.Paragraph(
                 [
                     ast.Text("Tiger: ["),
-                    ast.ItalicText(ast.Text("quietly")),
-                    ast.Text("]"),
+                    ast.ItalicText(ast.Text("quietly"), md_tag="_"),
+                    ast.Text("] "),
                     ast.CodeBlock(
-                        ast.Text("= Had only Bull not gotten to you first... =")
+                        ast.Text("= Had only Bull not gotten to you first... ="),
+                        md_tag="```asciidoc"
                     ),
                 ]
             ),
@@ -43,7 +44,8 @@ def test_annoying():
                     ast.CodeBlock(
                         ast.Text(
                             "= You may do so. I simply wish her safe in her den. But I cannot and will not force you to do anything. And my power in the physical plane is greatly limited without one to call me mentor. ="
-                        )
+                        ),
+                        md_tag="```asciidoc"
                     ),
                 ]
             ),
