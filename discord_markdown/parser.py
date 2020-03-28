@@ -6,7 +6,6 @@ from .spec import (
     TERMINAL_TOKEN_TYPES,
     NONFORMAT_TOKEN_TYPES,
     QUOTE_TOKEN_TYPES,
-    CODE_TOKEN_TYPES,
     EOF,
 )
 
@@ -31,35 +30,14 @@ class Parser:
         self._tree = []
         elems = []
         format_tokens = []
-        token_iter = iter(self.tokens)
         current_token = next(self.token_iter)
         node = None
         create_new_paragraph = False
         is_quote = False
         quote_token = None
         is_code_block = False
-        code_token = None
-        end_quote = False
 
         while current_token != self.eof:
-            # RULES:
-            # Create new paragraph if NEWLINE, EOF, are hit:
-            #   if the current format token is a SINGLE quote:
-            #       then start a new paragraph on NEWLINE
-            #   if BLOCK QUOTE:
-            #       then create paragraph when EOF
-            #   else:
-            #       then create paragraph on NEWLINE
-            #
-            # When the token is a FORMAT type (e.g. BOLD):
-            #   if the last item isn't the same token type:
-            #       add the format token to the stack
-            #   else:
-            #       pop from the stack if it is the same format token type as the last thing
-            #
-            # While stack is not empty and we aren't making a new paragraph yet, look through each token
-            #   create_new_paragraph = False
-            #
             format_token = None
 
             if current_token.type in QUOTE_TOKEN_TYPES:
@@ -67,7 +45,6 @@ class Parser:
                 quote_token = current_token
             elif current_token.type == TokenSpecification.CODE_BLOCK.name:
                 is_code_block = True
-                code_token = current_token
 
             if current_token.type in FORMAT_TOKEN_TYPES:
                 format_tokens.append(current_token)
@@ -120,6 +97,9 @@ class Parser:
 
                         if not format_tokens:
                             elems.append(node)
+
+                        if is_code_block:
+                            is_code_block = False
                     else:
                         format_tokens.append(current_token)
                 elif not is_code_block and current_token.type in TERMINAL_TOKEN_TYPES:

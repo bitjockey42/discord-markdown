@@ -1,5 +1,3 @@
-import pytest
-
 from discord_markdown.lexer import tokenize, Token
 
 

@@ -1,6 +1,6 @@
 import re
 
-from .spec import TokenSpecification, Token, FORMAT_TOKEN_TYPES, CODE_TOKEN_TYPES, EOF
+from .spec import TokenSpecification, Token, CODE_TOKEN_TYPES, EOF
 
 
 def tokenize(code, skip_newline=False):
