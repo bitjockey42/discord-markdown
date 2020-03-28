@@ -62,3 +62,8 @@ CODE_TOKEN_TYPES = [
     TokenSpecification.CODE_BLOCK.name,
     TokenSpecification.INLINE_CODE.name,
 ]
+
+
+NESTED_TOKEN_TYPES = [
+    TokenSpecification.INLINE_QUOTE.name,
+]

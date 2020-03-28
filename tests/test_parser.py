@@ -258,7 +258,6 @@ def test_code_block(markdown):
     )
 
 
-@pytest.mark.skip("FIXME")
 @pytest.mark.parametrize("markdown", [False, True])
 def test_inline_quote(markdown):
     text = "> This is _a_ quote.\nThis isn't part of it."

@@ -4,19 +4,25 @@ from .spec import TokenSpecification
 class NestedElement:
     HTML_TAG = ""
     MD_TAG = ""
+    HAS_CLOSE_MD_TAG = True
 
-    def __init__(self, elements):
+    def __init__(self, elements=None, md_tag=None):
+        if elements is None:
+            elements = []
         self.elements = elements
+        if md_tag is None:
+            md_tag = self.MD_TAG
+        self.md_tag = md_tag
 
     def open(self, markdown=False):
         if markdown:
-            return ""
+            return self.md_tag
         else:
             return f"<{self.HTML_TAG}>"
 
     def close(self, markdown=False):
         if markdown:
-            return "\n"
+            return self.MD_TAG if self.HAS_CLOSE_MD_TAG else ""
         else:
             return f"</{self.HTML_TAG}>"
 
@@ -28,6 +34,12 @@ class NestedElement:
 class Paragraph(NestedElement):
     HTML_TAG = "p"
     MD_TAG = "\n"
+
+    def open(self, markdown=False):
+        if markdown:
+            return ""
+        else:
+            return f"<{self.HTML_TAG}>"
 
 
 class Text:
@@ -79,6 +91,27 @@ class FormattedText(Text):
         return f"{self.open(markdown)}{self.value.eval(markdown)}{self.close(markdown)}"
 
 
+class CodeBlock(FormattedText):
+    HTML_TAG = "code"
+    MD_TAG = "```"
+
+    def close(self, markdown=False):
+        if markdown:
+            close_tag = self.MD_TAG
+        else:
+            close_tag = f"</{self.HTML_TAG}>"
+        return close_tag
+
+    def eval(self, markdown=False):
+        evaluated = (
+            f"{self.open(markdown)}{self.value.eval(markdown)}{self.close(markdown)}"
+        )
+        if markdown:
+            return evaluated
+        else:
+            return f"<pre>{evaluated}</pre>"
+
+
 class BoldText(FormattedText):
     HTML_TAG = "b"
     MD_TAG = "**"
@@ -104,34 +137,13 @@ class InlineCode(FormattedText):
     MD_TAG = "`"
 
 
-class CodeBlock(FormattedText):
-    HTML_TAG = "code"
-    MD_TAG = "```"
-
-    def close(self, markdown=False):
-        if markdown:
-            close_tag = self.MD_TAG
-        else:
-            close_tag = f"</{self.HTML_TAG}>"
-        return close_tag
-
-    def eval(self, markdown=False):
-        evaluated = (
-            f"{self.open(markdown)}{self.value.eval(markdown)}{self.close(markdown)}"
-        )
-        if markdown:
-            return evaluated
-        else:
-            return f"<pre>{evaluated}</pre>"
-
-
-class InlineQuote(FormattedText):
+class InlineQuote(NestedElement):
     HTML_TAG = "q"
     MD_TAG = ">"
     HAS_CLOSE_MD_TAG = False
 
 
-class BlockQuote(FormattedText):
+class BlockQuote(NestedElement):
     HTML_TAG = "blockquote"
     MD_TAG = ">>>"
     HAS_CLOSE_MD_TAG = False

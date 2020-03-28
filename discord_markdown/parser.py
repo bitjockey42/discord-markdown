@@ -3,6 +3,7 @@ from .ast import AST_BY_TOKEN_TYPE, Paragraph
 from .spec import (
     TokenSpecification,
     FORMAT_TOKEN_TYPES,
+    NESTED_TOKEN_TYPES,
     TERMINAL_TOKEN_TYPES,
     QUOTE_TOKEN_TYPES,
     EOF,
@@ -27,89 +28,19 @@ class Parser:
 
     def parse(self):
         self._tree = []
-        elems = []
-        format_tokens = []
-        current_token = next(self.token_iter)
-        create_new_paragraph = False
-        is_quote = False
-        quote_token = None
+        self._stack = []
+        self.token_iter = iter(self.tokens)
 
-        for token in self.tokens:
-            print(token)
+        current_token = next(self.token_iter)
+        paragraph = ast.Paragraph()
 
         while current_token != self.eof:
-            format_token = None
-            node = None
+            paragraph.elements.append(ast.Text(current_token.value))
 
-            if current_token.type in QUOTE_TOKEN_TYPES:
-                is_quote = True
-                quote_token = current_token
+            if current_token != self.eof:
+                current_token = next(self.token_iter)
 
-            if current_token.type in FORMAT_TOKEN_TYPES:
-                format_tokens.append(current_token)
-            else:
-                if current_token.type != TokenSpecification.NEWLINE.name:
-                    node = AST_BY_TOKEN_TYPE[TokenSpecification.TEXT.name](
-                        current_token.value
-                    )
-                    elems.append(node)
-
-            current_token = next(self.token_iter)
-
-            while format_tokens:
-                print("FORMAT TOKENS", format_tokens)
-                if (
-                    is_quote
-                    and quote_token.type == TokenSpecification.INLINE_QUOTE.name
-                    and current_token.type == TokenSpecification.NEWLINE.name
-                ) or (
-                    is_quote
-                    and quote_token.type == TokenSpecification.BLOCK_QUOTE.name
-                    and current_token.type == EOF
-                ):
-                    format_tokens.pop()
-                    node = AST_BY_TOKEN_TYPE[quote_token.type](
-                        node, md_tag=quote_token.value
-                    )
-                    is_quote = False
-                    create_new_paragraph = True
-                    quote_token = None
-                    elems.append(node)
-                elif current_token.type in FORMAT_TOKEN_TYPES:
-                    if current_token.type == format_tokens[-1].type:
-                        format_token = format_tokens.pop()
-
-                        if format_token.type == TokenSpecification.BOLD_ITALIC.name:
-                            node = ast.BoldText(ast.ItalicText(node))
-                        else:
-                            node = AST_BY_TOKEN_TYPE[format_token.type](
-                                node, md_tag=format_token.value
-                            )
-
-                        if not format_tokens:
-                            elems.append(node)
-                    else:
-                        format_tokens.append(current_token)
-                else:
-                    if node is None:
-                        node = AST_BY_TOKEN_TYPE[TokenSpecification.TEXT.name](
-                            current_token.value
-                        )
-                    else:
-                        node = node + AST_BY_TOKEN_TYPE[TokenSpecification.TEXT.name](
-                            current_token.value
-                        )
-
-                if node is not None:
-                    print(node.eval(True))
-
-                if current_token != self.eof:
-                    current_token = next(self.token_iter)
-
-            if create_new_paragraph or current_token.type in TERMINAL_TOKEN_TYPES:
-                self._tree.append(Paragraph(elems))
-                elems = []
-                create_new_paragraph = False
+            self._tree.append(paragraph)
 
 
 class ParseError(Exception):
