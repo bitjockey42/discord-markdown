@@ -43,30 +43,37 @@ class Parser:
                 paragraph = None
                 text_elem = None
             else:
-                if not paragraph:
+                if paragraph is None:
                     paragraph = ast.Paragraph()
-                text_elem = ast.Text(current_token.value)
-                paragraph.elements.append(text_elem)
+
+                if current_token.type in FORMAT_TOKEN_TYPES:
+                    self._format_tokens.append(current_token)
+                else:
+                    text_elem = ast.Text(current_token.value)
+                    paragraph.elements.append(text_elem)
+
+                while self._format_tokens and current_token != STOP_ITERATION:
+                    if current_token != STOP_ITERATION:
+                        current_token = next(current_token, STOP_ITERATION)
 
             current_token = next(self.token_iter, STOP_ITERATION)
 
 
     def _handle_formatted_text(self, current_token, paragraph, text_elem):
-        if current_token.type in FORMAT_TOKEN_TYPES:
-            if current_token.type == self._format_tokens[-1].type:
-                format_token = self._format_tokens.pop()
+        if current_token.type == self._format_tokens[-1].type:
+            format_token = self._format_tokens.pop()
 
-                if format_token.type == TokenSpecification.BOLD_ITALIC.name:
-                    elem = ast.BoldText(ast.ItalicText(text_elem))
-                else:
-                    elem = AST_BY_TOKEN_TYPE[format_token.type](
-                        text_elem, md_tag=format_token.value
-                    )
-
-                if not self._format_tokens:
-                    paragraph.elements.append(elem)
+            if format_token.type == TokenSpecification.BOLD_ITALIC.name:
+                elem = ast.BoldText(ast.ItalicText(text_elem))
             else:
-                self._format_tokens.append(current_token)
+                elem = AST_BY_TOKEN_TYPE[format_token.type](
+                    text_elem, md_tag=format_token.value
+                )
+
+            if not self._format_tokens:
+                paragraph.elements.append(elem)
+        else:
+            self._format_tokens.append(current_token)
 
 
 class ParseError(Exception):
