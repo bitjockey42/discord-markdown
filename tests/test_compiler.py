@@ -43,11 +43,11 @@ def test_compile_block_quote():
 
 
 def test_compile_inline_quote():
-    text = "> This is a quote.\nAnd this should not be part of it"
+    text = "> This is a quote.\nAnd _this_ should not be part of it"
     compiler = Compiler(text)
     assert (
         compiler.compile()
-        == "<p><q> This is a quote.</q></p><p>And this should not be part of it</p>"
+        == "<p><q> This is a quote.</q></p><p>And <i>this</i> should not be part of it</p>"
     )
     assert compiler.compile(True) == text
 
