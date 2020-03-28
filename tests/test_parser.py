@@ -308,7 +308,6 @@ def test_complex_markup():
     tokens = tokenize(text)
     parser = Parser(tokens)
     parser.parse()
-    # assert_tree(parser.tree, [], markdown=True)
     assert_tree(
         parser.tree,
         [

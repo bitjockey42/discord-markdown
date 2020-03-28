@@ -41,10 +41,6 @@ class Parser:
         code_token = None
         end_quote = False
 
-        print("TOKENS:\n")
-        for i, token in enumerate(self.tokens):
-            print(token)
-
         while current_token != self.eof:
             # RULES:
             # Create new paragraph if NEWLINE, EOF, are hit:
@@ -136,8 +132,6 @@ class Parser:
                     current_token = next(self.token_iter)
 
             if create_new_paragraph or current_token.type in TERMINAL_TOKEN_TYPES:
-                print("\n")
-                print("ELEMS", [e.eval() for e in elems])
                 self._tree.append(Paragraph(elems))
                 elems = []
                 create_new_paragraph = False
