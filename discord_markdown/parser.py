@@ -40,7 +40,10 @@ class Parser:
         is_code_block = False
         code_token = None
         end_quote = False
-        print(self.tokens)
+
+        print("TOKENS:\n")
+        for i, token in enumerate(self.tokens):
+            print(token)
 
         while current_token != self.eof:
             # RULES:
@@ -123,7 +126,7 @@ class Parser:
                             elems.append(node)
                     else:
                         format_tokens.append(current_token)
-                elif current_token.type in TERMINAL_TOKEN_TYPES:
+                elif not is_code_block and current_token.type in TERMINAL_TOKEN_TYPES:
                     create_new_paragraph = True
                 else:
                     text_value = current_token.value
@@ -132,10 +135,9 @@ class Parser:
                 if current_token != self.eof:
                     current_token = next(self.token_iter)
 
-            print(self.tokens)
-            print([e.eval() for e in elems])
-
             if create_new_paragraph or current_token.type in TERMINAL_TOKEN_TYPES:
+                print("\n")
+                print("ELEMS", [e.eval() for e in elems])
                 self._tree.append(Paragraph(elems))
                 elems = []
                 create_new_paragraph = False

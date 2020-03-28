@@ -11,133 +11,42 @@ def assert_tree(parser_tree, expected, markdown=False):
     ]
 
 
-def test_plain_text():
-    text = "Simple example"
+def test_annoying():
+    text = "[_Tiger looks at Kalahan contemplatively_]\nTiger: [_quietly_] ```asciidoc\n= Had only Bull not gotten to you first... =```\nTiger: ```asciidoc\n= You may do so. I simply wish her safe in her den. But I cannot and will not force you to do anything. And my power in the physical plane is greatly limited without one to call me mentor. =```"
     tokens = tokenize(text)
     parser = Parser(tokens)
     parser.parse()
-    assert_tree(parser.tree, [ast.Paragraph([ast.Text(text)])])
-
-
-def test_paragraph_text():
-    text = (
-        "This is the first paragraph.\nThis is the second one.\nThis is the third one."
-    )
-    tokens = tokenize(text)
-    parser = Parser(tokens)
-    parser.parse()
-    assert_tree(
-        parser.tree,
-        [
-            ast.Paragraph([ast.Text("This is the first paragraph.")]),
-            ast.Paragraph([ast.Text("This is the second one.")]),
-            ast.Paragraph([ast.Text("This is the third one.")]),
-        ],
-    )
-
-
-def test_bold_text():
-    text = "This is **formatted**"
-    tokens = tokenize(text)
-    parser = Parser(tokens)
-    parser.parse()
-    assert_tree(
-        parser.tree,
-        [ast.Paragraph([ast.Text("This is "), ast.BoldText(ast.Text("formatted"))])],
-    )
-
-
-def test_bold_alt_text():
-    text = "**formatted**"
-    tokens = tokenize(text)
-    parser = Parser(tokens)
-    parser.parse()
-    assert_tree(parser.tree, [ast.Paragraph([ast.BoldText(ast.Text("formatted"))])])
-
-
-@pytest.mark.parametrize("text", [("This is *formatted*"), ("This is _formatted_")])
-def test_italic_text(text):
-    tokens = tokenize(text)
-    parser = Parser(tokens)
-    parser.parse()
-    assert_tree(
-        parser.tree,
-        [ast.Paragraph([ast.Text("This is "), ast.ItalicText(ast.Text("formatted"))]),],
-    )
-
-
-def test_underline_text():
-    text = "An __underlined__ example"
-    tokens = tokenize(text)
-    parser = Parser(tokens)
-    parser.parse()
+    # assert_tree(parser.tree, [], markdown=True)
     assert_tree(
         parser.tree,
         [
             ast.Paragraph(
                 [
-                    ast.Text("An "),
-                    ast.UnderlineText(ast.Text("underlined")),
-                    ast.Text(" example"),
+                    ast.Text("["),
+                    ast.ItalicText(ast.Text("Tiger looks at Kalahan contemplatively")),
+                    ast.Text("]"),
                 ]
-            )
-        ],
-    )
-
-
-def test_underline_italics_text():
-    text = "An __*underline italics*__ example"
-    tokens = tokenize(text)
-    parser = Parser(tokens)
-    parser.parse()
-    assert_tree(
-        parser.tree,
-        [
+            ),
             ast.Paragraph(
                 [
-                    ast.Text("An "),
-                    ast.UnderlineText(ast.ItalicText(ast.Text("underline italics"))),
-                    ast.Text(" example"),
+                    ast.Text("Tiger: ["),
+                    ast.ItalicText(ast.Text("quietly")),
+                    ast.Text("]"),
+                    ast.CodeBlock(
+                        ast.Text("= Had only Bull not gotten to you first... =")
+                    ),
                 ]
-            )
-        ],
-    )
-
-
-def test_strikethrough_text():
-    text = "A ~~strikethrough~~ example"
-    tokens = tokenize(text)
-    parser = Parser(tokens)
-    parser.parse()
-    assert_tree(
-        parser.tree,
-        [
+            ),
             ast.Paragraph(
                 [
-                    ast.Text("A "),
-                    ast.StrikethroughText(ast.Text("strikethrough")),
-                    ast.Text(" example"),
-                ]
-            )
-        ],
-    )
-
-
-def test_bold_italics_text():
-    text = "This is ***bold italics*** and *italic*"
-    tokens = tokenize(text)
-    parser = Parser(tokens)
-    parser.parse()
-    assert_tree(
-        parser.tree,
-        [
-            ast.Paragraph(
-                [
-                    ast.Text("This is "),
-                    ast.BoldText(ast.ItalicText(ast.Text("bold italics"))),
-                    ast.Text(" and "),
-                    ast.ItalicText(ast.Text("italic")),
+                    ast.Text("Tiger: "),
+                    ast.CodeBlock(
+                        ast.Text(
+                            "= You may do so. I simply wish her safe in her den. But I cannot and will not force you to do anything. And my power in the physical plane is greatly limited without one to call me mentor. ="
+                        )
+                    ),
                 ]
             ),
         ],
+        markdown=True,
     )

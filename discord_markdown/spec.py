@@ -45,6 +45,7 @@ NONFORMAT_TOKEN_TYPES = [
     EOF,
 ]
 
+
 TERMINAL_TOKEN_TYPES = [
     TokenSpecification.NEWLINE.name,
     EOF,
