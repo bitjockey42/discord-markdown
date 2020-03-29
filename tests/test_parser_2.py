@@ -75,3 +75,29 @@ def test_bold_alt_text(markdown):
         [ast.Paragraph([ast.BoldText([ast.Text("formatted")])])],
         markdown=markdown,
     )
+
+
+@pytest.mark.parametrize("markdown", [False, True])
+def test_bold_italics_text(markdown):
+    text = "Here I _am_ in the **light** of ***day***\nLet the storm rage on"
+    tokens = tokenize(text)
+    parser = Parser(tokens)
+    parser.parse()
+    assert_tree(
+        parser.tree,
+        [
+            ast.Paragraph(
+                [
+                    ast.Text("Here I "),
+                    ast.ItalicText([ast.Text("am")], md_tag="_"),
+                    ast.Text(" in the "),
+                    ast.BoldText([ast.Text("light")]),
+                    ast.Text(" of "),
+                    ast.BoldText([ast.ItalicText([ast.Text("day")])]),
+                ]
+            ),
+            ast.Paragraph([ast.Text("Let the storm rage on")]),
+        ],
+        markdown=markdown,
+    )
+

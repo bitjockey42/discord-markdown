@@ -63,9 +63,18 @@ class Parser:
                     if current_token.type == self._format_tokens[-1].type:
                         format_token = self._format_tokens.pop()
 
-                        node = ast.AST_BY_TOKEN_TYPE[format_token.type](
-                            [text_elem], md_tag=format_token.value
-                        )
+                        if current_token.type == TokenSpecification.BOLD_ITALIC.name:
+                            node = ast.BoldText(
+                                [
+                                    ast.ItalicText(
+                                        [text_elem]
+                                    )
+                                ]
+                            )
+                        else:
+                            node = ast.AST_BY_TOKEN_TYPE[format_token.type](
+                                [text_elem], md_tag=format_token.value
+                            )
 
                         if not self._format_tokens:
                             paragraph.elements.append(node)
