@@ -37,19 +37,43 @@ class Parser:
             return
 
         elem = None
+        text_elem = None
         paragraph = ast.Paragraph()
         current_token = next(self.token_iter, STOP_ITERATION)
 
         while current_token != STOP_ITERATION:
-            if current_token.type in TERMINAL_TOKEN_TYPES:
-                self._tree.append(paragraph)
-                paragraph = None
+            if current_token.type in FORMAT_TOKEN_TYPES:
+                self._format_tokens.append(current_token)
             else:
                 if paragraph is None:
                     paragraph = ast.Paragraph()
                 paragraph.elements.append(ast.Text(current_token.value))
 
             current_token = next(self.token_iter, STOP_ITERATION)
+
+            while self._format_tokens:
+                if current_token.type in FORMAT_TOKEN_TYPES:
+                    if current_token.type == self._format_tokens[-1].type:
+                        format_token = self._format_tokens.pop()
+
+                        node = ast.AST_BY_TOKEN_TYPE[format_token.type](
+                            [text_elem], md_tag=format_token.value
+                        )
+
+                        if not self._format_tokens:
+                            paragraph.elements.append(node)
+                    else:
+                        self._format_tokens.append(current_token)
+                else:
+                    text_elem = ast.Text(current_token.value)
+
+                if current_token != self.eof:
+                    current_token = next(self.token_iter, STOP_ITERATION)
+
+            if current_token == STOP_ITERATION or current_token.type in TERMINAL_TOKEN_TYPES:
+                self._tree.append(paragraph)
+                print([e.eval() for e in paragraph.elements])
+                paragraph = None
 
 
 class ParseError(Exception):
