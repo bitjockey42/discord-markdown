@@ -47,7 +47,9 @@ class Parser:
             else:
                 if paragraph is None:
                     paragraph = ast.Paragraph()
-                paragraph.elements.append(ast.Text(current_token.value))
+
+                if current_token.type not in TERMINAL_TOKEN_TYPES:
+                    paragraph.elements.append(ast.Text(current_token.value))
 
             current_token = next(self.token_iter, STOP_ITERATION)
 
