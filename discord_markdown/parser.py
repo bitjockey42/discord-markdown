@@ -76,12 +76,17 @@ class Parser:
 
                 if current_token != self.eof:
                     current_token = next(self.token_iter, STOP_ITERATION)
+            
+            print("--------------------BEFORE------------------------")
+            for elem in paragraph.elements:
+                print(elem.eval())
 
             if current_token == STOP_ITERATION or current_token.type in TERMINAL_TOKEN_TYPES:
-                print("---------------------Paragraph---------------------")
-                self._tree.append(paragraph)
-                print("MARKDOWN", [e.eval(True) for e in paragraph.elements])
-                print("HTMl", [e.eval(False) for e in paragraph.elements])
+                print("---------------------PARAGRAPH---------------------")
+                if paragraph.elements:
+                    self._tree.append(paragraph)
+                print("MARKDOWN", [(e.eval(True), e) for e in paragraph.elements])
+                print("HTML", [(e.eval(False), e) for e in paragraph.elements])
                 paragraph = None
 
 
