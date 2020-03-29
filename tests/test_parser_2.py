@@ -14,6 +14,14 @@ def assert_tree(parser_tree, expected, markdown=False):
     ]
 
 
+def test_empty_text():
+    text = ""
+    tokens = tokenize(text)
+    parser = Parser(tokens)
+    parser.parse()
+    assert_tree(parser.tree, [])
+
+
 @pytest.mark.parametrize("markdown", [False, True])
 def test_plain_text(markdown):
     text = "Simple example"
@@ -24,7 +32,6 @@ def test_plain_text(markdown):
     assert_tree(parser.tree, expected, markdown)
 
 
-@pytest.mark.skip("FIX")
 @pytest.mark.parametrize("markdown", [False, True])
 def test_paragraph_text(markdown):
     text = (

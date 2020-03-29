@@ -33,6 +33,9 @@ class Parser:
         self._format_tokens = []
         self.token_iter = iter(self.tokens)
 
+        if len(self.tokens) == 1 and self.tokens[0].type in TERMINAL_TOKEN_TYPES:
+            return
+
         elem = None
         paragraph = ast.Paragraph()
         current_token = next(self.token_iter, STOP_ITERATION)
@@ -41,16 +44,13 @@ class Parser:
             if current_token.type in TERMINAL_TOKEN_TYPES:
                 self._tree.append(paragraph)
                 paragraph = None
-                elem = None
-
-            if current_token.type in NONFORMAT_TOKEN_TYPES:
+            else:
                 if paragraph is None:
                     paragraph = ast.Paragraph()
-                elem = ast.Text(current_token.value)
+                paragraph.elements.append(ast.Text(current_token.value))
 
-            if elem is not None:
-                paragraph.elements.append(elem)
             current_token = next(self.token_iter, STOP_ITERATION)
+
 
 class ParseError(Exception):
     pass
