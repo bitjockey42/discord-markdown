@@ -62,3 +62,16 @@ def test_bold_text(markdown):
         [ast.Paragraph([ast.Text("This is "), ast.BoldText([ast.Text("formatted")])])],
         markdown=markdown,
     )
+
+
+@pytest.mark.parametrize("markdown", [False, True])
+def test_bold_alt_text(markdown):
+    text = "**formatted**"
+    tokens = tokenize(text)
+    parser = Parser(tokens)
+    parser.parse()
+    assert_tree(
+        parser.tree,
+        [ast.Paragraph([ast.BoldText([ast.Text("formatted")])])],
+        markdown=markdown,
+    )
