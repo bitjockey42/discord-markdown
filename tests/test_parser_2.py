@@ -101,3 +101,51 @@ def test_bold_italics_text(markdown):
         markdown=markdown,
     )
 
+
+@pytest.mark.parametrize("markdown", [False, True])
+def test_underline_text(markdown):
+    text = "An __underlined__ example"
+    tokens = tokenize(text)
+    parser = Parser(tokens)
+    parser.parse()
+    assert_tree(
+        parser.tree,
+        [
+            ast.Paragraph(
+                [
+                    ast.Text("An "),
+                    ast.UnderlineText([ast.Text("underlined")]),
+                    ast.Text(" example"),
+                ]
+            )
+        ],
+        markdown=markdown,
+    )
+
+
+@pytest.mark.parametrize("markdown", [False, True])
+def test_underline_bold_text(markdown):
+    text = "An __**underline bold**__ example"
+    tokens = tokenize(text)
+    parser = Parser(tokens)
+    parser.parse()
+    assert_tree(
+        parser.tree,
+        [
+            ast.Paragraph(
+                [
+                    ast.Text("An "),
+                    ast.UnderlineText(
+                        [
+                            ast.BoldText(
+                                [ast.Text("underline bold")]
+                            )
+                        ]
+                    ),
+                    ast.Text(" example"),
+                ]
+            )
+        ],
+        markdown=markdown,
+    )
+
