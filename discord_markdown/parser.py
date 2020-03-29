@@ -45,7 +45,6 @@ class Parser:
         format_node = None
         current_token = next(self.token_iter, STOP_ITERATION)
 
-
         print("------------------TOKENS-----------------")
         for token in self.tokens:
             print(token)
@@ -63,6 +62,7 @@ class Parser:
 
             current_token = next(self.token_iter, STOP_ITERATION)
 
+            print("--------------FORMAT--------------------")
             while self._format_tokens:
                 if current_token.type in FORMAT_TOKEN_TYPES:
                     if current_token.type == self._format_tokens[-1].type:
@@ -78,27 +78,37 @@ class Parser:
                 else:
                     text_elem = ast.Text(current_token.value)
                     if format_node.elements:
-                        format_node.elements[-1].elements.append(text_elem)
+                        print("FORMAT_NODE", format_node)
+                        sub_node = format_node.elements[-1]
+                        sub_node.elements.append(text_elem)
+
+                        print("SUB_NODE", sub_node)
+
+                        # Find leaves
+                        while sub_node.NAME != ast.Text.NAME and sub_node.elements:
+                            if sub_node.NAME != ast.Text.NAME and sub_node.elements:
+                                sub_node = sub_node.elements[-1]
+                                print("SUB_NODE", sub_node)
                     else:
                         format_node.elements.append(text_elem)
 
                 if current_token != self.eof:
                     current_token = next(self.token_iter, STOP_ITERATION)
-            
-            print("--------------------BEFORE------------------------")
+
+            print("--------------------PARAGRAPH ELEMENTS------------------------")
             for elem in paragraph.elements:
                 print(elem.eval())
 
-            if current_token == STOP_ITERATION or current_token.type in TERMINAL_TOKEN_TYPES:
+            if (
+                current_token == STOP_ITERATION
+                or current_token.type in TERMINAL_TOKEN_TYPES
+            ):
                 print("---------------------PARAGRAPH---------------------")
                 if paragraph.elements:
                     self._tree.append(paragraph)
                 print("MARKDOWN", [(e.eval(True), e) for e in paragraph.elements])
                 print("HTML", [(e.eval(False), e) for e in paragraph.elements])
                 paragraph = None
-
-    def build_tree(self):
-        self.token_iter = iter(self.tokens, STOP_ITERATION)
 
 
 class ParseError(Exception):

@@ -136,13 +136,7 @@ def test_underline_bold_text(markdown):
             ast.Paragraph(
                 [
                     ast.Text("An "),
-                    ast.UnderlineText(
-                        [
-                            ast.BoldText(
-                                [ast.Text("underline bold")]
-                            )
-                        ]
-                    ),
+                    ast.UnderlineText([ast.BoldText([ast.Text("underline bold")])]),
                     ast.Text(" example"),
                 ]
             )
@@ -150,3 +144,27 @@ def test_underline_bold_text(markdown):
         markdown=markdown,
     )
 
+
+@pytest.mark.parametrize("markdown", [False, True])
+def test_nested_formatting_text(markdown):
+    text = "__This **_is nested_**__"
+    tokens = tokenize(text)
+    parser = Parser(tokens)
+    parser.parse()
+    assert_tree(
+        parser.tree,
+        [
+            ast.Paragraph(
+                [
+                    ast.UnderlineText(
+                        [
+                            ast.Text("This "),
+                            ast.BoldText(
+                                [ast.ItalicText([ast.Text("is nested")], md_tag="_")]
+                            ),
+                        ]
+                    )
+                ]
+            )
+        ],
+    )
