@@ -18,6 +18,7 @@ class Parser:
         self.token_iter = iter(self.tokens)
         self.eof = self.tokens[-1]
         self._format_tokens = []
+        self._text_elems = []
         self._tree = []
 
     @property
@@ -31,6 +32,7 @@ class Parser:
     def parse(self):
         self._tree = []
         self._format_tokens = []
+        self._text_elems = []
         self.token_iter = iter(self.tokens)
 
         if len(self.tokens) == 1 and self.tokens[0].type in TERMINAL_TOKEN_TYPES:
@@ -39,6 +41,8 @@ class Parser:
         elem = None
         text_elem = None
         paragraph = ast.Paragraph()
+        format_token = None
+        format_node = None
         current_token = next(self.token_iter, STOP_ITERATION)
 
 
@@ -48,6 +52,7 @@ class Parser:
 
         while current_token != STOP_ITERATION:
             if current_token.type in FORMAT_TOKEN_TYPES:
+                format_node = ast.AST_BY_TOKEN_TYPE[current_token.type]()
                 self._format_tokens.append(current_token)
             else:
                 if paragraph is None:
@@ -63,25 +68,19 @@ class Parser:
                     if current_token.type == self._format_tokens[-1].type:
                         format_token = self._format_tokens.pop()
 
-                        if current_token.type == TokenSpecification.BOLD_ITALIC.name:
-                            node = ast.BoldText(
-                                [
-                                    ast.ItalicText(
-                                        [text_elem]
-                                    )
-                                ]
-                            )
-                        else:
-                            node = ast.AST_BY_TOKEN_TYPE[format_token.type](
-                                [text_elem], md_tag=format_token.value
-                            )
-
                         if not self._format_tokens:
-                            paragraph.elements.append(node)
+                            if format_node is not None:
+                                paragraph.elements.append(format_node)
                     else:
+                        node = ast.AST_BY_TOKEN_TYPE[current_token.type]()
+                        format_node.elements.append(node)
                         self._format_tokens.append(current_token)
                 else:
                     text_elem = ast.Text(current_token.value)
+                    if format_node.elements:
+                        format_node.elements[-1].elements.append(text_elem)
+                    else:
+                        format_node.elements.append(text_elem)
 
                 if current_token != self.eof:
                     current_token = next(self.token_iter, STOP_ITERATION)
@@ -97,6 +96,9 @@ class Parser:
                 print("MARKDOWN", [(e.eval(True), e) for e in paragraph.elements])
                 print("HTML", [(e.eval(False), e) for e in paragraph.elements])
                 paragraph = None
+
+    def build_tree(self):
+        self.token_iter = iter(self.tokens, STOP_ITERATION)
 
 
 class ParseError(Exception):
