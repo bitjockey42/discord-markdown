@@ -41,6 +41,11 @@ class Parser:
         paragraph = ast.Paragraph()
         current_token = next(self.token_iter, STOP_ITERATION)
 
+
+        print("------------------TOKENS-----------------")
+        for token in self.tokens:
+            print(token)
+
         while current_token != STOP_ITERATION:
             if current_token.type in FORMAT_TOKEN_TYPES:
                 self._format_tokens.append(current_token)
@@ -73,8 +78,10 @@ class Parser:
                     current_token = next(self.token_iter, STOP_ITERATION)
 
             if current_token == STOP_ITERATION or current_token.type in TERMINAL_TOKEN_TYPES:
+                print("---------------------Paragraph---------------------")
                 self._tree.append(paragraph)
-                print([e.eval() for e in paragraph.elements])
+                print("MARKDOWN", [e.eval(True) for e in paragraph.elements])
+                print("HTMl", [e.eval(False) for e in paragraph.elements])
                 paragraph = None
 
 
