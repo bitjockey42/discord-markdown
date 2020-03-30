@@ -23,13 +23,10 @@ class BetterParser:
             print(token)
 
         while current_token != STOP:
-            #import ipdb; ipdb.set_trace()
             if current_token.type in FORMAT_TOKEN_TYPES:
                 self._stack.append(current_token)
                 print(f"[{current_token.type}]")
                 current_token = next(token_iter, STOP)
-            else:
-                print(current_token.value)
 
             while self._stack and current_token != STOP:
                 if current_token.type in FORMAT_TOKEN_TYPES:
