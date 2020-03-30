@@ -31,7 +31,7 @@ class BetterParser:
             else:
                 print(current_token.value)
 
-            while self._stack:
+            while self._stack and current_token != STOP:
                 if current_token.type in FORMAT_TOKEN_TYPES:
                     if current_token.type == self._stack[-1].type:
                         format_token = self._stack.pop()
@@ -44,7 +44,8 @@ class BetterParser:
 
                 current_token = next(token_iter, STOP)
 
-            print(current_token.value)
+            if current_token != STOP:
+                print(current_token.value)
 
             current_token = next(token_iter, STOP)
 
