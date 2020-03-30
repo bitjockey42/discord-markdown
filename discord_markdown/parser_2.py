@@ -9,11 +9,12 @@ class BetterParser:
     def __init__(self, string):
         self.string = string
         self.tokens = tokenize(string) 
+        self._stack = []
 
     def parse(self):
         print("STRING", self.string)
 
-        stack = []
+        self._stack = []
         token_iter = iter(self.tokens)
         current_token = next(token_iter, STOP)
         format_token = None
@@ -22,25 +23,28 @@ class BetterParser:
             print(token)
 
         while current_token != STOP:
+            #import ipdb; ipdb.set_trace()
             if current_token.type in FORMAT_TOKEN_TYPES:
-                stack.append(current_token)
+                self._stack.append(current_token)
                 print(f"[{current_token.type}]")
+                current_token = next(token_iter, STOP)
             else:
                 print(current_token.value)
 
-            current_token = next(token_iter, STOP)
-
-            while stack:
+            while self._stack:
                 if current_token.type in FORMAT_TOKEN_TYPES:
-                    if current_token.type == stack[-1].type:
-                        format_token = stack.pop()
+                    if current_token.type == self._stack[-1].type:
+                        format_token = self._stack.pop()
                         print(f"[/{current_token.type}]")
                     else:
                         print(f"[{current_token.type}]")
-                        stack.append(current_token)
+                        self._stack.append(current_token)
                 else:
                     print(current_token.value)
                 
                 current_token = next(token_iter, STOP)
 
             current_token = next(token_iter, STOP)
+
+    def format_node(self, current_token):
+        pass
