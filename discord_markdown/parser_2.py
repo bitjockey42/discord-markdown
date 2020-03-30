@@ -34,9 +34,10 @@ class BetterParser:
             if current_token.type in FORMAT_TOKEN_TYPES:
                 self._stack.append(current_token)
                 print(f"[{current_token.type}]")
-                current_token = next(token_iter, STOP)
                 element = ast.AST_BY_TOKEN_TYPE[current_token.type]()
                 paragraph.elements.append(element)
+
+                current_token = next(token_iter, STOP)
             else:
                 if paragraph is None:
                     paragraph = ast.Paragraph()
@@ -50,6 +51,7 @@ class BetterParser:
                     else:
                         print(f"[{current_token.type}]")
                         self._stack.append(current_token)
+                        element = ast.AST_BY_TOKEN_TYPE[current_token.type]()
                 else:
                     print(current_token.value)
 
