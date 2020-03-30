@@ -21,6 +21,8 @@ class BetterParser:
 
         self._tree = []
         self._stack = []
+        format_elements = []
+        text_elements = []
         token_iter = iter(self.tokens)
         current_token = next(token_iter, STOP)
         format_token = None
@@ -35,8 +37,7 @@ class BetterParser:
                 self._stack.append(current_token)
                 print(f"[{current_token.type}]")
                 element = ast.AST_BY_TOKEN_TYPE[current_token.type]()
-                paragraph.elements.append(element)
-
+                format_elements.append(element)
                 current_token = next(token_iter, STOP)
             else:
                 if paragraph is None:
@@ -48,12 +49,20 @@ class BetterParser:
                     if current_token.type == self._stack[-1].type:
                         format_token = self._stack.pop()
                         print(f"[/{current_token.type}]")
+                        if text_elements:
+                            text_element = text_elements.pop()
+                        if format_elements:
+                            format_element = format_elements.pop()
+                            format_element.elements.append(text_element)
+                            print(format_element.eval())
                     else:
                         print(f"[{current_token.type}]")
                         self._stack.append(current_token)
                         element = ast.AST_BY_TOKEN_TYPE[current_token.type]()
+                        format_elements.append(element)
                 else:
                     print(current_token.value)
+                    text_elements.append(ast.Text(current_token.value))
 
                 current_token = next(token_iter, STOP)
 
