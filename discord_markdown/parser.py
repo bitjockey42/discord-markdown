@@ -1,15 +1,13 @@
 from . import ast
+from .ast import AST_BY_TOKEN_TYPE, Paragraph
 from .spec import (
     TokenSpecification,
-    NONFORMAT_TOKEN_TYPES,
     FORMAT_TOKEN_TYPES,
-    NESTED_TOKEN_TYPES,
     TERMINAL_TOKEN_TYPES,
+    NONFORMAT_TOKEN_TYPES,
     QUOTE_TOKEN_TYPES,
     EOF,
 )
-
-STOP_ITERATION = "STOP_ITERATION"
 
 
 class Parser:
@@ -17,8 +15,7 @@ class Parser:
         self.tokens = tokens
         self.token_iter = iter(self.tokens)
         self.eof = self.tokens[-1]
-        self._format_tokens = []
-        self._text_elems = []
+        self._stack = []
         self._tree = []
 
     @property
@@ -31,84 +28,98 @@ class Parser:
 
     def parse(self):
         self._tree = []
-        self._format_tokens = []
-        self._text_elems = []
-        self.token_iter = iter(self.tokens)
+        elems = []
+        format_tokens = []
+        current_token = next(self.token_iter)
+        create_new_paragraph = False
+        is_quote = False
+        quote_token = None
+        is_code_block = False
 
-        if len(self.tokens) == 1 and self.tokens[0].type in TERMINAL_TOKEN_TYPES:
-            return
+        while current_token != self.eof:
+            format_token = None
+            node = None
 
-        elem = None
-        text_elem = None
-        paragraph = ast.Paragraph()
-        format_token = None
-        format_node = None
-        current_token = next(self.token_iter, STOP_ITERATION)
+            if current_token.type in QUOTE_TOKEN_TYPES:
+                is_quote = True
+                quote_token = current_token
+            elif current_token.type == TokenSpecification.CODE_BLOCK.name:
+                is_code_block = True
 
-        print("------------------TOKENS-----------------")
-        for token in self.tokens:
-            print(token)
-
-        while current_token != STOP_ITERATION:
             if current_token.type in FORMAT_TOKEN_TYPES:
-                format_node = ast.AST_BY_TOKEN_TYPE[current_token.type]()
-                self._format_tokens.append(current_token)
+                format_tokens.append(current_token)
             else:
-                if paragraph is None:
-                    paragraph = ast.Paragraph()
+                if current_token.type != TokenSpecification.NEWLINE.name:
+                    node = AST_BY_TOKEN_TYPE[TokenSpecification.TEXT.name](
+                        current_token.value
+                    )
+                    elems.append(node)
 
-                if current_token.type not in TERMINAL_TOKEN_TYPES:
-                    paragraph.elements.append(ast.Text(current_token.value))
+            current_token = next(self.token_iter)
 
-            current_token = next(self.token_iter, STOP_ITERATION)
+            while format_tokens and not create_new_paragraph:
+                if (
+                    is_quote
+                    and quote_token.type == TokenSpecification.INLINE_QUOTE.name
+                    and current_token.type == TokenSpecification.NEWLINE.name
+                ) or (
+                    is_quote
+                    and quote_token.type == TokenSpecification.BLOCK_QUOTE.name
+                    and current_token.type == EOF
+                ):
+                    format_tokens.pop()
+                    node = AST_BY_TOKEN_TYPE[quote_token.type](
+                        node, md_tag=quote_token.value
+                    )
+                    is_quote = False
+                    create_new_paragraph = True
+                    quote_token = None
+                    elems.append(node)
+                elif (
+                    is_quote
+                    and quote_token.type == TokenSpecification.BLOCK_QUOTE.name
+                    and current_token.type in NONFORMAT_TOKEN_TYPES
+                ):
+                    text_value = current_token.value
+                    if node is not None:
+                        text_value = node.value + text_value
+                    node = AST_BY_TOKEN_TYPE[TokenSpecification.TEXT.name](text_value)
+                elif current_token.type in FORMAT_TOKEN_TYPES:
+                    if current_token.type == format_tokens[-1].type:
+                        format_token = format_tokens.pop()
 
-            print("--------------FORMAT--------------------")
-            while self._format_tokens:
-                if current_token.type in FORMAT_TOKEN_TYPES:
-                    if current_token.type == self._format_tokens[-1].type:
-                        format_token = self._format_tokens.pop()
+                        if format_token.type == TokenSpecification.BOLD_ITALIC.name:
+                            node = ast.BoldText(ast.ItalicText(node))
+                        else:
+                            node = AST_BY_TOKEN_TYPE[format_token.type](
+                                node, md_tag=format_token.value
+                            )
 
-                        if not self._format_tokens:
-                            if format_node is not None:
-                                paragraph.elements.append(format_node)
+                        if not format_tokens:
+                            elems.append(node)
+
+                        if is_code_block:
+                            is_code_block = False
                     else:
-                        node = ast.AST_BY_TOKEN_TYPE[current_token.type]()
-                        format_node.elements.append(node)
-                        self._format_tokens.append(current_token)
+                        format_tokens.append(current_token)
+                elif not is_code_block and current_token.type in TERMINAL_TOKEN_TYPES:
+                    create_new_paragraph = True
+                elif is_code_block:
+                    text_value = current_token.value
+                    if node is not None:
+                        text_value = node.value + text_value
+                    node = AST_BY_TOKEN_TYPE[TokenSpecification.TEXT.name](text_value)
                 else:
-                    text_elem = ast.Text(current_token.value)
-                    if format_node.elements:
-                        print("FORMAT_NODE", format_node)
-                        sub_node = format_node.elements[-1]
-                        sub_node.elements.append(text_elem)
-
-                        print("SUB_NODE", sub_node)
-
-                        # Find leaves
-                        while sub_node.NAME != ast.Text.NAME and sub_node.elements:
-                            if sub_node.NAME != ast.Text.NAME and sub_node.elements:
-                                sub_node = sub_node.elements[-1]
-                                print("SUB_NODE", sub_node)
-                    else:
-                        format_node.elements.append(text_elem)
+                    text_value = current_token.value
+                    node = AST_BY_TOKEN_TYPE[TokenSpecification.TEXT.name](text_value)
 
                 if current_token != self.eof:
-                    current_token = next(self.token_iter, STOP_ITERATION)
+                    current_token = next(self.token_iter)
 
-            print("--------------------PARAGRAPH ELEMENTS------------------------")
-            for elem in paragraph.elements:
-                print(elem.eval())
-
-            if (
-                current_token == STOP_ITERATION
-                or current_token.type in TERMINAL_TOKEN_TYPES
-            ):
-                print("---------------------PARAGRAPH---------------------")
-                if paragraph.elements:
-                    self._tree.append(paragraph)
-                print("MARKDOWN", [(e.eval(True), e) for e in paragraph.elements])
-                print("HTML", [(e.eval(False), e) for e in paragraph.elements])
-                paragraph = None
+            if create_new_paragraph or current_token.type in TERMINAL_TOKEN_TYPES:
+                self._tree.append(Paragraph(elems))
+                elems = []
+                create_new_paragraph = False
 
 
 class ParseError(Exception):

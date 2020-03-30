@@ -1,6 +1,6 @@
 from . import ast
 from .lexer import tokenize
-from .spec import TokenSpecification, FORMAT_TOKEN_TYPES
+from .spec import TokenSpecification, FORMAT_TOKEN_TYPES, EOF
 
 STOP = "STOP"
 
@@ -41,8 +41,10 @@ class BetterParser:
                         self._stack.append(current_token)
                 else:
                     print(current_token.value)
-                
+
                 current_token = next(token_iter, STOP)
+
+            print(current_token.value)
 
             current_token = next(token_iter, STOP)
 
