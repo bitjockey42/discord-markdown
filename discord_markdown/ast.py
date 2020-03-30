@@ -14,6 +14,7 @@ class NestedElement:
         if md_tag is None:
             md_tag = self.MD_TAG
         self.md_tag = md_tag
+        self.terminate = False
 
     def open(self, markdown=False):
         if markdown:
