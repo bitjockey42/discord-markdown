@@ -46,8 +46,7 @@ class BetterParser:
 
             if current_token != STOP:
                 print(current_token.value)
-
-            current_token = next(token_iter, STOP)
+                current_token = next(token_iter, STOP)
 
     def format_node(self, current_token):
         pass
