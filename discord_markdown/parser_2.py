@@ -21,6 +21,7 @@ class BetterParser:
 
         for token in self.tokens:
             print(token)
+        print("\n=============================")
 
         while current_token != STOP:
             if current_token.type in FORMAT_TOKEN_TYPES:
