@@ -3,6 +3,7 @@ import enum
 
 
 EOF = "EOF"
+STOP = "STOP"
 
 Token = collections.namedtuple("Token", ["type", "value", "line", "column"])
 TokenSpec = collections.namedtuple("TokenSpec", ["name", "pattern", "instances"])

@@ -4,10 +4,9 @@ from discord_markdown.spec import (
     TokenSpecification,
     FORMAT_TOKEN_TYPES,
     TERMINAL_TOKEN_TYPES,
+    STOP,
     EOF,
 )
-
-STOP = "STOP"
 
 
 class BetterParser:
@@ -19,7 +18,8 @@ class BetterParser:
         self.parse()
 
     def __repr__(self):
-        return "\n".join([e.eval() for e in self.tree])
+        evaluated_tree = "\n".join([e.eval() for e in self.tree])
+        return f"{self.string}\n\n{evaluated_tree}"
 
     @property
     def tree(self):
@@ -42,14 +42,13 @@ class BetterParser:
 
         while current_token != STOP:
             text_element = None
-            text_elements = []
-            format_elements = []
             format_element = None
             format_token = None
 
             if current_token.type in FORMAT_TOKEN_TYPES:
                 self._stack.append(current_token)
                 print(f"[{current_token.type}]")
+                format_element = ast.AST_BY_TOKEN_TYPE[current_token.type]()
                 current_token = next(token_iter, STOP)
             else:
                 if paragraph is None:
@@ -71,7 +70,12 @@ class BetterParser:
                         print(f"[{current_token.type}]")
                         self._stack.append(current_token)
                 else:
-                    format_element = ast.Text(value=current_token.value)
+                    if text_element is None:
+                        text_element = ast.Text(value=current_token.value)
+                    else:
+                        text_element = text_element + ast.Text(
+                            value=current_token.value
+                        )
                     print(current_token.value)
 
                 current_token = next(token_iter, STOP)
