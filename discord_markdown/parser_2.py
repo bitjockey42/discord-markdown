@@ -8,7 +8,7 @@ STOP = "STOP"
 class BetterParser:
     def __init__(self, string):
         self.string = string
-        self.tokens = tokenize(string) 
+        self.tokens = tokenize(string)
         self._stack = []
         self._tree = []
 
@@ -21,7 +21,7 @@ class BetterParser:
 
         self._tree = []
         self._stack = []
-        
+
         # Remove from the front at index 0
         token_iter = iter(self.tokens)
         current_token = next(token_iter, STOP)
@@ -37,7 +37,7 @@ class BetterParser:
             format_elements = []
             format_element = None
             format_token = None
-    
+
             if current_token.type in FORMAT_TOKEN_TYPES:
                 self._stack.append(current_token)
                 print(f"[{current_token.type}]")
@@ -51,7 +51,9 @@ class BetterParser:
                 if current_token.type in FORMAT_TOKEN_TYPES:
                     if current_token.type == self._stack[-1].type:
                         format_token = self._stack.pop()
-                        format_element = ast.AST_BY_TOKEN_TYPE[format_token.type]() + format_element
+                        format_element = (
+                            ast.AST_BY_TOKEN_TYPE[format_token.type]() + format_element
+                        )
                         print(f"[/{current_token.type}]")
 
                         if not self._stack:
@@ -60,7 +62,7 @@ class BetterParser:
                         print(f"[{current_token.type}]")
                         self._stack.append(current_token)
                 else:
-                    text_element = ast.Text(value=current_token.value)
+                    format_element = ast.Text(value=current_token.value)
                     print(current_token.value)
 
                 current_token = next(token_iter, STOP)
