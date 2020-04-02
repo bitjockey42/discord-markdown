@@ -16,6 +16,10 @@ class NestedElement:
         self.md_tag = md_tag
         self.terminate = False
 
+    def __add__(self, other):
+        self.elements.append(other)
+        return self
+
     def open(self, markdown=False):
         if markdown:
             return self.md_tag
