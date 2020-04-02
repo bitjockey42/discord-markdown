@@ -21,11 +21,10 @@ class BetterParser:
 
         self._tree = []
         self._stack = []
-        format_elements = []
-        text_elements = []
+        
+        # Remove from the front at index 0
         token_iter = iter(self.tokens)
         current_token = next(token_iter, STOP)
-        format_token = None
         paragraph = None
 
         for token in self.tokens:
@@ -33,11 +32,15 @@ class BetterParser:
         print("\n=============================")
 
         while current_token != STOP:
+            text_element = None
+            text_elements = []
+            format_elements = []
+            format_element = None
+            format_token = None
+    
             if current_token.type in FORMAT_TOKEN_TYPES:
                 self._stack.append(current_token)
                 print(f"[{current_token.type}]")
-                element = ast.AST_BY_TOKEN_TYPE[current_token.type]()
-                format_elements.append(element)
                 current_token = next(token_iter, STOP)
             else:
                 if paragraph is None:
@@ -48,21 +51,17 @@ class BetterParser:
                 if current_token.type in FORMAT_TOKEN_TYPES:
                     if current_token.type == self._stack[-1].type:
                         format_token = self._stack.pop()
+                        format_element = ast.AST_BY_TOKEN_TYPE[format_token.type]() + format_element
                         print(f"[/{current_token.type}]")
-                        if text_elements:
-                            text_element = text_elements.pop()
-                        if format_elements:
-                            format_element = format_elements.pop()
-                            format_element.elements.append(text_element)
-                            print(format_element.eval())
+
+                        if not self._stack:
+                            paragraph.elements.append(format_element)
                     else:
                         print(f"[{current_token.type}]")
                         self._stack.append(current_token)
-                        element = ast.AST_BY_TOKEN_TYPE[current_token.type]()
-                        format_elements.append(element)
                 else:
+                    text_element = ast.Text(value=current_token.value)
                     print(current_token.value)
-                    text_elements.append(ast.Text(current_token.value))
 
                 current_token = next(token_iter, STOP)
 

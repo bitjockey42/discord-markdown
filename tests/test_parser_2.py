@@ -1,7 +1,7 @@
 import pytest
 
 from discord_markdown.lexer import tokenize
-from discord_markdown.parser import Parser
+from discord_markdown.parser_2 import BetterParser
 from discord_markdown import ast
 
 from tests.fixtures import load_file
