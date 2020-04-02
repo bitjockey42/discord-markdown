@@ -34,7 +34,7 @@ class BetterParser:
         # Remove from the front at index 0
         token_iter = iter(self.tokens)
         current_token = next(token_iter, STOP)
-        paragraph = None
+        paragraph = ast.Paragraph()
 
         for token in self.tokens:
             print(token)
@@ -44,16 +44,15 @@ class BetterParser:
             text_elements = []
             text_element = None
             format_element = None
+            root_format_element = None
             format_token = None
 
             if current_token.type in FORMAT_TOKEN_TYPES:
                 self._stack.append(current_token)
                 print(f"[{current_token.type}]")
-                format_element = ast.AST_BY_TOKEN_TYPE[current_token.type]()
+                root_format_element = ast.AST_BY_TOKEN_TYPE[current_token.type]()
                 current_token = next(token_iter, STOP)
             else:
-                if paragraph is None:
-                    paragraph = ast.Paragraph()
                 paragraph.elements.append(ast.Text(current_token.value))
 
             while self._stack and current_token != STOP:
@@ -65,18 +64,21 @@ class BetterParser:
                             text_element = text_elements[0]
                             text_elements.remove(text_element)
 
-                        format_element = format_element + ast.AST_BY_TOKEN_TYPE[format_token.type](elements=[text_element])
+                        if format_element is None:
+                            format_element = ast.AST_BY_TOKEN_TYPE[format_token.type](elements=[text_element])
+                        else:
+                            format_element = format_element + ast.AST_BY_TOKEN_TYPE[format_token.type](elements=[text_element])
 
                         print(f"[/{current_token.type}]")
 
                         if not self._stack:
-                            paragraph.elements.append(format_element)
+                            root_format_element.elements.append(format_element)
+                            paragraph.elements.append(root_format_element)
                     else:
                         print(f"[{current_token.type}]")
                         self._stack.append(current_token)
                 else:
                     text_elements.append(ast.Text(value=current_token.value))
-                    
                     print(current_token.value)
 
                 current_token = next(token_iter, STOP)
@@ -84,11 +86,8 @@ class BetterParser:
             if current_token.type in TERMINAL_TOKEN_TYPES:
                 print("---------------------------------")
                 self._tree.append(paragraph)
-                paragraph = None
+                paragraph = ast.Paragraph()
 
             if current_token != STOP:
                 print(current_token.value)
                 current_token = next(token_iter, STOP)
-
-    def format_node(self, current_token):
-        pass
