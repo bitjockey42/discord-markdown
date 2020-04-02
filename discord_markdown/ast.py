@@ -17,8 +17,7 @@ class NestedElement:
         self.terminate = False
 
     def __add__(self, other):
-        if other is not None:
-            self.elements.append(other)
+        self.elements.append(other)
         return self
 
     def open(self, markdown=False):

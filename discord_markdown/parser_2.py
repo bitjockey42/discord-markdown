@@ -41,6 +41,7 @@ class BetterParser:
         print("\n=============================")
 
         while current_token != STOP:
+            text_elements = []
             text_element = None
             format_element = None
             format_token = None
@@ -48,7 +49,6 @@ class BetterParser:
             if current_token.type in FORMAT_TOKEN_TYPES:
                 self._stack.append(current_token)
                 print(f"[{current_token.type}]")
-                format_element = ast.AST_BY_TOKEN_TYPE[current_token.type]()
                 current_token = next(token_iter, STOP)
             else:
                 if paragraph is None:
@@ -59,9 +59,16 @@ class BetterParser:
                 if current_token.type in FORMAT_TOKEN_TYPES:
                     if current_token.type == self._stack[-1].type:
                         format_token = self._stack.pop()
-                        format_element = (
-                            ast.AST_BY_TOKEN_TYPE[format_token.type]() + format_element
-                        )
+
+                        if text_elements:
+                            text_element = text_elements[0]
+                            text_elements.remove(text_element)
+
+                        if format_element is None:
+                            format_element = ast.AST_BY_TOKEN_TYPE[format_token.type](elements=[text_element])
+                        else:
+                            format_element = format_element + ast.AST_BY_TOKEN_TYPE[format_token.type](elements=[text_element])
+
                         print(f"[/{current_token.type}]")
 
                         if not self._stack:
@@ -70,12 +77,8 @@ class BetterParser:
                         print(f"[{current_token.type}]")
                         self._stack.append(current_token)
                 else:
-                    if text_element is None:
-                        text_element = ast.Text(value=current_token.value)
-                    else:
-                        text_element = text_element + ast.Text(
-                            value=current_token.value
-                        )
+                    text_elements.append(ast.Text(value=current_token.value))
+                    
                     print(current_token.value)
 
                 current_token = next(token_iter, STOP)
