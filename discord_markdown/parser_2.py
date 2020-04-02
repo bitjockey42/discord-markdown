@@ -1,6 +1,11 @@
-from . import ast
-from .lexer import tokenize
-from .spec import TokenSpecification, FORMAT_TOKEN_TYPES, TERMINAL_TOKEN_TYPES, EOF
+from discord_markdown import ast
+from discord_markdown.lexer import tokenize
+from discord_markdown.spec import (
+    TokenSpecification,
+    FORMAT_TOKEN_TYPES,
+    TERMINAL_TOKEN_TYPES,
+    EOF,
+)
 
 STOP = "STOP"
 
@@ -14,7 +19,7 @@ class BetterParser:
         self.parse()
 
     def __repr__(self):
-        return "".join([e.eval() for e in self.tree])
+        return "\n".join([e.eval() for e in self.tree])
 
     @property
     def tree(self):

@@ -1,5 +1,5 @@
-from .lexer import tokenize
-from .parser import Parser
+from discord_markdown.lexer import tokenize
+from discord_markdown.parser import Parser
 
 
 class Compiler:

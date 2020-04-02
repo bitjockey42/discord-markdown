@@ -1,6 +1,6 @@
 import re
 
-from .spec import TokenSpecification, Token, CODE_TOKEN_TYPES, EOF
+from discord_markdown.spec import TokenSpecification, Token, CODE_TOKEN_TYPES, EOF
 
 
 def tokenize(code, skip_newline=False):
