@@ -11,6 +11,10 @@ class BetterParser:
         self.tokens = tokenize(string)
         self._stack = []
         self._tree = []
+        self.parse()
+
+    def __repr__(self):
+        return "".join([e.eval() for e in self.tree])
 
     @property
     def tree(self):
