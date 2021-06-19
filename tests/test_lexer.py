@@ -122,16 +122,9 @@ def test_code_block():
     text = """```markdown
     This is **meta** and should be ignored```"""
     assert tokenize(text) == [
-        Token("CODE_BLOCK", value="```markdown", line=1, column=0),
-        Token(
-            "TEXT",
-            value="\n    This is **meta** and should be ignored",
-            line=2,
-            column=11,
-        ),
-        Token("CODE_BLOCK", value="```", line=2, column=42),
-        Token("TEXT", value="", line=2, column=45),
-        Token("EOF", value="", line=2, column=len(text)),
+        Token(type='CODE_BLOCK', value='```markdown\n    This is **meta** and should be ignored```', line=1, column=0),
+        Token(type='TEXT', value='', line=1, column=57),
+        Token(type='EOF', value='', line=2, column=57),
     ]
 
 

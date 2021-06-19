@@ -70,7 +70,7 @@ def tokenize_generator(code, skip_newline=False):
     )
     line_num = 1
     line_start = 0
-    for mo in re.finditer(tok_regex, code):
+    for mo in re.finditer(tok_regex, code, flags=re.DOTALL):
         token_type = mo.lastgroup
         value = mo.group()
         column = mo.start() - line_start

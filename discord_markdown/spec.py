@@ -9,7 +9,7 @@ TokenSpec = collections.namedtuple("TokenSpec", ["name", "pattern", "instances"]
 
 
 class TokenSpecification(enum.Enum):
-    CODE_BLOCK = ("CODE_BLOCK", r"`", r"{3}\w*")
+    CODE_BLOCK = ("CODE_BLOCK", r"```\w+\n(.*)```", "")
     INLINE_CODE = ("INLINE_CODE", r"`", r"{1}")
     SPOILER = ("SPOILER", r"\|", r"{2}")
     BOLD_ITALIC = ("BOLD_ITALIC", r"\*", r"{3}")
